@@ -1,0 +1,45 @@
+# Ignore Node.js build artifacts
+node_modules/
+
+# Ignore the compiled output of TypeScript
+dist/
+
+# Ignore the .eslintrc.cjs file
+.eslintrc.cjs
+
+# Ignore the package lock file
+package-lock.json
+
+# Ignore environment configuration files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Ignore any generated files
+*.log
+*.sqlite
+
+# Ignore the build cache
+.cache/
+
+# Ignore the local build server
+.vite/
+
+# Ignore IDE/Text Editor specific files
+.vscode/
+.idea/
+
+# Ignore any user-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore npm error logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore the compiled output of TypeScript in a Node.js environment
+tsconfig.tsbuildinfo
+tsconfig.node.json
