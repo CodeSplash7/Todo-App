@@ -30,6 +30,14 @@ const initialState: InitialState = {
       labelId: 2,
       creationDate: new Date(),
       dueDate: new Date()
+    },
+    {
+      title: "TaskOfRandom3",
+      description: "This is a random task. #3",
+      status: "overdue",
+      labelId: 1,
+      creationDate: new Date(),
+      dueDate: new Date()
     }
   ]
 };

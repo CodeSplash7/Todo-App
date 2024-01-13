@@ -24,31 +24,54 @@ function App() {
             New Task
           </button>
         </div>
-        {/* Tasks */}
-        <div className="flex flex-col w-full gap-[10px]">
+        {/* Tasks list */}
+        <div className="flex flex-col w-full h-fit gap-[10px]">
           {tasks.length > 0 &&
             tasks.map((task, index) => {
+              let { creationDate, dueDate } = task;
               return (
-                <div key={index} className="text-white px-[20px] py-[10px]">
-                  <div className="group flex flex-col">
-                    <div className="flex bg-[#555] z-10">
-                      <div className="text-[20px] text-start w-full">
-                        {index + 1}.
+                <div key={index}>
+                  {/* Task */}
+                  <div className="text-white group w-full flex flex-col h-fit">
+                    {/* Task secondary details 1 */}
+                    <div className=" [tranistion-property:all] duration-150 ease-linear flex justify-between h-0 group-hover:h-[40px] overflow-hidden relative">
+                      {/* Task creation date */}
+                      <div className="w-full flex justify-end [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
+                        <div className="bg-red-900 h-full flex items-center px-[20px] rounded-t-sm">
+                          <div>Due Date: {formatDate(dueDate)}</div>
+                        </div>
                       </div>
-                      <div className="text-[17px] text-center w-full">
-                        {task.title}
-                      </div>
-                      <div className="w-full text-end">√</div>
                     </div>
-                    <div className="transition duration-150 flex px-[30px] z-0 translate-y-[-100%] group-hover:translate-y-0">
-                      <div className="w-full flex justify-start">
-                        <div className="bg-red-800 w-fit">X</div>
+                    {/* Task main details */}
+                    <div className="border-black border-[1px] bg-slate-700 flex justify-between px-[20px] py-[10px]">
+                      {/* Task number */}
+                      <div>{index + 1}.</div>
+                      {/* Task title */}
+                      <div>{task.title}</div>
+                      {/* Task 'complete' button */}
+                      <div>√</div>
+                    </div>
+                    {/* Task secondary details 2 */}
+                    <div className="[tranistion-property:all] duration-150 ease-linear flex justify-between h-0 group-hover:h-[40px] overflow-hidden relative">
+                      {/* Task 'delete' button */}
+                      <div className="w-full flex justify-start [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[-100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
+                        <div title="delete" className="transition duration-150 hover:text-green-500 underline bg-red-900 h-full flex items-center px-[20px] rounded-b-sm">
+                          X
+                        </div>
                       </div>
-                      <div className="w-full flex justify-center">
-                        <div className="bg-red-800 w-fit">due date</div>
+                      {/* Task due date */}
+                      <div className="w-full flex justify-center [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[-100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
+                        <div onClick={() => openTaskForm()} className="transition duration-150 hover:text-green-500 underline bg-red-900 h-full flex items-center px-[20px] rounded-b-sm">
+                          See Details
+                        </div>
                       </div>
-                      <div className="w-full flex justify-end">
-                        <div className="bg-red-800 w-fit">creating date</div>
+                      {/* Task creation date */}
+                      <div className="w-full flex justify-end [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[-100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
+                        <div className="bg-red-900 h-full w-fit flex items-center px-[20px] rounded-b-sm">
+                          <div className="whitespace-nowrap">
+                            Creation Date: {formatDate(creationDate)}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -59,6 +82,10 @@ function App() {
       </div>
     </>
   );
+  function formatDate(dateObj: Date) {
+    let d = dateObj;
+    return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
+  }
 
   function closeTaskForm() {
     setTaskFormOpened(false);
