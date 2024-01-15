@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { CloseTaskForm } from "../App";
 import { CreateNewTask } from "../App";
+import { unknown } from "zod";
 ReactModal.setAppElement("#root");
 
 type TaskFormProps = {
@@ -107,6 +108,7 @@ export default ({
           <button
             onClick={() => {
               createNewTask({
+                id: 0,
                 title,
                 labelId,
                 status: "active",

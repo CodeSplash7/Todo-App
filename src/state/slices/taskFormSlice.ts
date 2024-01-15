@@ -13,7 +13,7 @@ type TaskFormState = {
 } & TaskForm;
 
 const initialState: TaskFormState = {
-  taskFormIsOpen: true,
+  taskFormIsOpen: false,
   title: "",
   label: "",
   creationDate: "",

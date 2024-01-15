@@ -4,6 +4,7 @@ import { OpenTaskForm } from "../App";
 type TaskListProps = {
   tasks: TaskObject[];
   openTaskForm: () => void;
+  handleDeleteTask: (taskId: number) => void;
 };
 
 function formatDate(dateObj: Date) {
@@ -11,7 +12,7 @@ function formatDate(dateObj: Date) {
   return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
 }
 
-export default ({ tasks, openTaskForm }: TaskListProps) => {
+export default ({ tasks, openTaskForm, handleDeleteTask }: TaskListProps) => {
   let tasksExist = tasks.length > 0;
   return (
     <div className="flex flex-col w-full h-fit gap-[10px]">
@@ -30,6 +31,7 @@ export default ({ tasks, openTaskForm }: TaskListProps) => {
               <TaskBottomDetails
                 creationDate={creationDate}
                 openTaskForm={openTaskForm}
+                deleteTask={() => handleDeleteTask(task.id)}
               />
             </div>
           );
@@ -57,16 +59,20 @@ const TaskTopDetails = ({ dueDate }: TaskTopDetailsProps) => {
 type TaskBottomDetailsProps = {
   creationDate: Date;
   openTaskForm: OpenTaskForm;
+  deleteTask: () => void;
 };
+
 const TaskBottomDetails = ({
   creationDate,
-  openTaskForm
+  openTaskForm,
+  deleteTask
 }: TaskBottomDetailsProps) => {
   return (
     <div className="[tranistion-property:all] duration-150 ease-linear flex justify-between h-0 group-hover:h-[40px] overflow-hidden relative">
       {/* Task 'delete' button */}
       <div className="w-full flex justify-start [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[-100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
         <div
+          onClick={deleteTask}
           title="delete"
           className="transition duration-150 hover:text-green-500 underline bg-red-900 h-full flex items-center px-[20px] rounded-b-sm"
         >

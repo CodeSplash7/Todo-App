@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export type TaskObject = {
-  id?: number;
+  id: number;
   title: string;
   description: string;
   status: "active" | "completed" | "overdue";
@@ -50,10 +50,15 @@ let tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    addTask(state, action) {
+    addTask(state, action: { payload: TaskObject }) {
       const task = action.payload;
       task.id = state.tasks.length;
       state.tasks.push(task);
+    },
+    deleteTask(state, action: { payload: number }) {
+      const taskId = action.payload;
+      const newTasks = state.tasks.filter((task) => task.id !== taskId);
+      state.tasks = newTasks;
     }
   }
 });

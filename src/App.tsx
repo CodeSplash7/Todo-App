@@ -21,20 +21,29 @@ function App() {
   };
   const openTaskForm: OpenTaskForm = () => dispatch(setTaskFormIsOpen(true));
 
-  const createNewTask: CreateNewTask = (taskInfo) => {
+  const handleCreateNewTask: CreateNewTask = (taskInfo) => {
     dispatch(tasksActions.addTask(taskInfo));
   };
+
+  const handleDeleteTask: HandleDeleteTask = (taskId) => {
+    dispatch(tasksActions.deleteTask(taskId));
+  };
+
   return (
     <>
       <TaskForm
-        createNewTask={createNewTask}
+        createNewTask={handleCreateNewTask}
         taskFormIsOpen={taskFormIsOpen}
         closeModal={closeTaskForm}
       />
       {/* Whole page */}
       <div className="px-[200px] pt-[100px] flex flex-col items-center gap-[20px]">
         <MainHeader openTaskForm={openTaskForm} />
-        <TaskList tasks={tasks} openTaskForm={openTaskForm} />
+        <TaskList
+          tasks={tasks}
+          openTaskForm={openTaskForm}
+          handleDeleteTask={handleDeleteTask}
+        />
       </div>
     </>
   );
@@ -45,3 +54,4 @@ export default App;
 export type OpenTaskForm = () => void;
 export type CloseTaskForm = () => void;
 export type CreateNewTask = (taskInfo: TaskObject) => void;
+export type HandleDeleteTask = (taskId: number) => void;
