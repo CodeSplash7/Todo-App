@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import TasksReducer from "./tasks/tasksSlice";
+import TasksReducer from "./slices/tasksSlice";
+import TaskFormReducer from "./slices/taskFormSlice";
 
 const store = configureStore({
-  reducer: { tasks: TasksReducer }
+  reducer: { tasks: TasksReducer, taskForm: TaskFormReducer }
 });
 
 export type RootState = ReturnType<typeof store.getState>;
