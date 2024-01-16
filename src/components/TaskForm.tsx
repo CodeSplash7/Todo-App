@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+// dependencies
+import { useState } from "react";
 import ReactModal from "react-modal";
+ReactModal.setAppElement("#root");
+
+// types
 import { CloseTaskForm } from "../App";
 import { CreateNewTask } from "../App";
-import { unknown } from "zod";
-ReactModal.setAppElement("#root");
 
 type TaskFormProps = {
   createNewTask: CreateNewTask;

@@ -1,33 +1,38 @@
+// dependencies
 import { useDispatch, useSelector } from "react-redux";
+
+// components
 import TaskForm from "./components/TaskForm";
 import MainHeader from "./components/MainHeader";
 import TaskList from "./components/TaskList";
+
+// types
 import { RootState } from "./state/store";
-import { taskFormActions } from "./state/slices/taskFormSlice";
 import { TaskObject } from "./state/slices/tasksSlice";
+
+// redux actions
+import { taskFormActions } from "./state/slices/taskFormSlice";
 import { tasksActions } from "./state/slices/tasksSlice";
+
+type ComponentFunctions = {
+  closeTaskForm: CloseTaskForm;
+  openTaskForm: OpenTaskForm;
+  handleCreateNewTask: CreateNewTask;
+  handleDeleteTask: HandleDeleteTask;
+};
 
 function App() {
   const dispatch = useDispatch();
+  // get redux actions
   const { setTaskFormIsOpen } = taskFormActions;
-  // const [taskFormIsOpen, setTaskFormOpened] = useState(false);
+  // state
   const taskFormIsOpen = useSelector(
     (state: RootState) => state.taskForm.taskFormIsOpen
   );
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
 
-  const closeTaskForm: CloseTaskForm = () => {
-    dispatch(setTaskFormIsOpen(false));
-  };
-  const openTaskForm: OpenTaskForm = () => dispatch(setTaskFormIsOpen(true));
-
-  const handleCreateNewTask: CreateNewTask = (taskInfo) => {
-    dispatch(tasksActions.addTask(taskInfo));
-  };
-
-  const handleDeleteTask: HandleDeleteTask = (taskId) => {
-    dispatch(tasksActions.deleteTask(taskId));
-  };
+  const { closeTaskForm, openTaskForm, handleCreateNewTask, handleDeleteTask } =
+    componentFunctions();
 
   return (
     <>
@@ -47,6 +52,23 @@ function App() {
       </div>
     </>
   );
+
+  function componentFunctions(): ComponentFunctions {
+    return {
+      closeTaskForm: () => {
+        dispatch(setTaskFormIsOpen(false));
+      },
+      openTaskForm: () => {
+        dispatch(setTaskFormIsOpen(true));
+      },
+      handleCreateNewTask: (taskInfo: any) => {
+        dispatch(tasksActions.addTask(taskInfo));
+      },
+      handleDeleteTask: (taskId) => {
+        dispatch(tasksActions.deleteTask(taskId));
+      }
+    };
+  }
 }
 
 export default App;

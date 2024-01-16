@@ -1,3 +1,4 @@
+// types
 import { TaskObject } from "../state/slices/tasksSlice";
 import { OpenTaskForm } from "../App";
 
