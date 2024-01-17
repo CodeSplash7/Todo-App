@@ -1,28 +1,42 @@
 // dependencies
-import { useState } from "react";
 import ReactModal from "react-modal";
 ReactModal.setAppElement("#root");
+import { useSelector, useDispatch } from "react-redux";
 
 // types
-import { CloseTaskForm } from "../App";
-import { CreateNewTask } from "../App";
+import { RootState } from "../state/store";
 
-type TaskFormProps = {
-  createNewTask: CreateNewTask;
-  taskFormIsOpen: boolean;
-  closeModal: CloseTaskForm;
-};
+// redux actions
+import { taskFormActions } from "../state/slices/taskFormSlice";
+import { tasksActions } from "../state/slices/tasksSlice";
 
-export default ({
-  createNewTask,
-  taskFormIsOpen,
-  closeModal
-}: TaskFormProps) => {
-  let [title, setTitle] = useState<string>("");
-  let [labelId, setLabelId] = useState<number>(0);
-  let [creationDate, setCreationDate] = useState<string>("");
-  let [dueDate, setDueDate] = useState<string>("");
-  let [description, setDescription] = useState<string>("");
+export default () => {
+  const dispatch = useDispatch();
+  const {
+    setTitle,
+    setLabelId,
+    // setCreationDate,
+    setDueDate,
+    setDescription,
+    resetForm
+  } = taskFormActions;
+  const { addTask, updateTask } = tasksActions;
+
+  let taskFormIsOpen = useSelector(
+    (state: RootState) => state.taskForm.taskFormIsOpen
+  );
+  let id = useSelector((state: RootState) => state.taskForm.id);
+  console.log(id)
+
+  let title = useSelector((state: RootState) => state.taskForm.title);
+  let labelId = useSelector((state: RootState) => state.taskForm.labelId);
+  let creationDate = useSelector(
+    (state: RootState) => state.taskForm.creationDate
+  );
+  let dueDate = useSelector((state: RootState) => state.taskForm.dueDate);
+  let description = useSelector(
+    (state: RootState) => state.taskForm.description
+  );
 
   return (
     <ReactModal
@@ -51,7 +65,7 @@ export default ({
             <label htmlFor="title-input">Title: </label>
             <input
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => dispatch(setTitle(e.target.value))}
               className="rounded py-[5px] px-[10px] bg-[#333] text-white outline-none"
               type="text"
               id="title-input"
@@ -62,7 +76,7 @@ export default ({
             <label htmlFor="label-input">Label:</label>
             <select
               value={labelId}
-              onChange={(e) => setLabelId(Number(e.target.value))}
+              onChange={(e) => dispatch(setLabelId(Number(e.target.value)))}
               className="rounded py-[5px] px-[10px] bg-[#333] text-white outline-none"
               id="label-input"
             >
@@ -87,7 +101,7 @@ export default ({
             <label htmlFor="due-input">Due Date: </label>
             <input
               value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
+              onChange={(e) => dispatch(setDueDate(e.target.value))}
               className="rounded py-[5px] px-[10px] bg-[#333] text-white outline-none"
               type="datetime-local"
               id="due-input"
@@ -99,7 +113,7 @@ export default ({
           <label htmlFor="description-input">Description:</label>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => dispatch(setDescription(e.target.value))}
             className="rounded py-[5px] px-[10px] bg-[#333] text-white outline-none"
             id="description-input"
           ></textarea>
@@ -109,16 +123,36 @@ export default ({
           {/* Save -> to the server */}
           <button
             onClick={() => {
-              createNewTask({
-                id: 0,
-                title,
-                labelId,
-                status: "active",
-                creationDate,
-                dueDate,
-                description
-              });
-              closeModal();
+              if (id !== undefined) {
+                dispatch(
+                  updateTask({
+                    id: id,
+                    info: {
+                      title,
+                      id,
+                      status: "active",
+                      labelId,
+                      creationDate,
+                      dueDate,
+                      description
+                    }
+                  })
+                );
+              }
+              if (id === undefined) {
+                dispatch(
+                  addTask({
+                    id: 0,
+                    title,
+                    labelId,
+                    status: "active",
+                    creationDate,
+                    dueDate,
+                    description
+                  })
+                );
+              }
+              dispatch(resetForm());
             }}
             className="bg-green-500 px-[10px] py-[5px] rounded hover:bg-green-600 duration-200 transition"
           >
@@ -127,7 +161,7 @@ export default ({
           {/* Cancel -> exit the form without saving anything*/}
           <button
             className="bg-gray-700 px-[10px] py-[5px] rounded hover:bg-gray-800 duration-200 transition"
-            onClick={() => closeModal()}
+            onClick={() => dispatch(resetForm())}
           >
             Cancel
           </button>

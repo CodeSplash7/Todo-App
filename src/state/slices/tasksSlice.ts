@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { TaskForm } from "./taskFormSlice";
 
 export type TaskObject = {
   id: number;
@@ -17,7 +18,7 @@ type InitialState = {
 const initialState: InitialState = {
   tasks: [
     {
-      id: 1,
+      id: 0,
       title: "TaskOfRandom",
       description: "This is a random task.",
       status: "active",
@@ -26,7 +27,7 @@ const initialState: InitialState = {
       dueDate: new Date().toISOString()
     },
     {
-      id: 2,
+      id: 1,
       title: "TaskOfRandom2",
       description: "This is a random task. #2",
       status: "completed",
@@ -35,7 +36,7 @@ const initialState: InitialState = {
       dueDate: new Date().toISOString()
     },
     {
-      id: 3,
+      id: 2,
       title: "TaskOfRandom3",
       description: "This is a random task. #3",
       status: "overdue",
@@ -50,15 +51,27 @@ let tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    addTask(state, action: { payload: TaskObject }) {
+    addTask(state, action: PayloadAction<TaskObject>) {
       const task = action.payload;
       task.id = state.tasks.length;
       state.tasks.push(task);
     },
-    deleteTask(state, action: { payload: number }) {
+    deleteTask(state, action: PayloadAction<number>) {
       const taskId = action.payload;
       const newTasks = state.tasks.filter((task) => task.id !== taskId);
       state.tasks = newTasks;
+    },
+    updateTask(state, action: PayloadAction<{ id: number; info: TaskObject }>) {
+      let targetedTask = state.tasks.find(
+        (task) => task.id === action.payload.id
+      );
+      targetedTask = { ...targetedTask, ...action.payload.info };
+      state.tasks = state.tasks.map((task) => {
+        if (task.id === targetedTask?.id){
+          task = targetedTask
+        }
+        return task;
+      })
     }
   }
 });

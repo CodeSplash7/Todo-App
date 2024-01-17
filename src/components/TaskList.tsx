@@ -1,11 +1,11 @@
 // types
 import { TaskObject } from "../state/slices/tasksSlice";
-import { OpenTaskForm } from "../App";
+import { HandleDeleteTask, HandleUpdateTask } from "../App";
 
 type TaskListProps = {
   tasks: TaskObject[];
-  openTaskForm: () => void;
-  handleDeleteTask: (taskId: number) => void;
+  handleDeleteTask: HandleDeleteTask;
+  handleUpdateTask: HandleUpdateTask;
 };
 
 function formatDate(dateObj: Date) {
@@ -13,7 +13,11 @@ function formatDate(dateObj: Date) {
   return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
 }
 
-export default ({ tasks, openTaskForm, handleDeleteTask }: TaskListProps) => {
+export default ({
+  tasks,
+  handleDeleteTask,
+  handleUpdateTask
+}: TaskListProps) => {
   let tasksExist = tasks.length > 0;
   return (
     <div className="flex flex-col w-full h-fit gap-[10px]">
@@ -31,7 +35,7 @@ export default ({ tasks, openTaskForm, handleDeleteTask }: TaskListProps) => {
               <TaskMainDetails taskCount={index + 1} taskTitle={task.title} />
               <TaskBottomDetails
                 creationDate={creationDate}
-                openTaskForm={openTaskForm}
+                updateTask={() => handleUpdateTask(task.id)}
                 deleteTask={() => handleDeleteTask(task.id)}
               />
             </div>
@@ -59,13 +63,13 @@ const TaskTopDetails = ({ dueDate }: TaskTopDetailsProps) => {
 
 type TaskBottomDetailsProps = {
   creationDate: Date;
-  openTaskForm: OpenTaskForm;
+  updateTask: () => void;
   deleteTask: () => void;
 };
 
 const TaskBottomDetails = ({
   creationDate,
-  openTaskForm,
+  updateTask,
   deleteTask
 }: TaskBottomDetailsProps) => {
   return (
@@ -83,7 +87,7 @@ const TaskBottomDetails = ({
       {/* Task due date */}
       <div className="w-full flex justify-center [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[-100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
         <div
-          onClick={() => openTaskForm()}
+          onClick={updateTask}
           className="transition duration-150 hover:text-green-500 underline bg-red-900 h-full flex items-center px-[20px] rounded-b-sm"
         >
           See Details
