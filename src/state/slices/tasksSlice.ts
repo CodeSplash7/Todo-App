@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TaskForm } from "./taskFormSlice";
 
 export type TaskObject = {
   id: number;
@@ -67,11 +66,11 @@ let tasksSlice = createSlice({
       );
       targetedTask = { ...targetedTask, ...action.payload.info };
       state.tasks = state.tasks.map((task) => {
-        if (task.id === targetedTask?.id){
-          task = targetedTask
+        if (task.id === targetedTask?.id) {
+          task = targetedTask;
         }
         return task;
-      })
+      });
     }
   }
 });

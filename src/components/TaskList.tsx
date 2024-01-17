@@ -1,10 +1,14 @@
+// dependencies
+import { useSelector, useDispatch } from "react-redux";
+
 // types
-import { TaskObject } from "../state/slices/tasksSlice";
-import { HandleDeleteTask, HandleUpdateTask } from "../App";
+import { HandleUpdateTask } from "../App";
+import { RootState } from "../state/store";
+
+// actions
+import { tasksActions } from "../state/slices/tasksSlice";
 
 type TaskListProps = {
-  tasks: TaskObject[];
-  handleDeleteTask: HandleDeleteTask;
   handleUpdateTask: HandleUpdateTask;
 };
 
@@ -13,11 +17,10 @@ function formatDate(dateObj: Date) {
   return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
 }
 
-export default ({
-  tasks,
-  handleDeleteTask,
-  handleUpdateTask
-}: TaskListProps) => {
+export default ({ handleUpdateTask }: TaskListProps) => {
+  const dispatch = useDispatch();
+  const { deleteTask } = tasksActions;
+  const tasks = useSelector((state: RootState) => state.tasks.tasks);
   let tasksExist = tasks.length > 0;
   return (
     <div className="flex flex-col w-full h-fit gap-[10px]">
@@ -36,7 +39,7 @@ export default ({
               <TaskBottomDetails
                 creationDate={creationDate}
                 updateTask={() => handleUpdateTask(task.id)}
-                deleteTask={() => handleDeleteTask(task.id)}
+                deleteTask={() => dispatch(deleteTask(task.id))}
               />
             </div>
           );
