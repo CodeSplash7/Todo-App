@@ -15,6 +15,7 @@ type TaskListProps = {
 
 function formatDate(dateObj: Date) {
   let d = dateObj;
+  if (isNaN(d.getTime())) return null;
   return `${d.toLocaleDateString()} ${d.getHours()}:${d.getMinutes()}`;
 }
 
@@ -83,7 +84,7 @@ const TaskTopDetails = ({ dueDate, taskStatus }: TaskTopDetailsProps) => {
           ${taskStatus === "overdue" ? "text-red-500" : ""}
         `}
         >
-          <div>Due Date: {formatDate(dueDate)}</div>
+          <div>Due Date: {formatDate(dueDate) ?? "No Constrains"}</div>
         </div>
       </div>
     </div>
