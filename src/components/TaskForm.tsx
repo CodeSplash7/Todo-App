@@ -15,7 +15,6 @@ export default () => {
   const {
     setTitle,
     setLabelId,
-    // setCreationDate,
     setDueDate,
     setDescription,
     resetForm
@@ -26,8 +25,6 @@ export default () => {
     (state: RootState) => state.taskForm.taskFormIsOpen
   );
   let id = useSelector((state: RootState) => state.taskForm.id);
-  console.log(id)
-
   let title = useSelector((state: RootState) => state.taskForm.title);
   let labelId = useSelector((state: RootState) => state.taskForm.labelId);
   let creationDate = useSelector(
@@ -90,10 +87,11 @@ export default () => {
           <div className="w-[100%] flex flex-col">
             <label htmlFor="creation-input">Creation Date:</label>
             <input
-              value={creationDate}
-              type="datetime-local"
-              className="rounded py-[5px] px-[10px] bg-[#333] text-white outline-none"
               readOnly
+              value={creationDate}
+              className="rounded py-[5px] px-[10px] bg-[#333] text-white outline-none"
+              type="datetime-local"
+              id="creation-input"
             />
           </div>
           {/* Due Date */}
@@ -146,7 +144,7 @@ export default () => {
                     title,
                     labelId,
                     status: "active",
-                    creationDate,
+                    creationDate: "",
                     dueDate,
                     description
                   })

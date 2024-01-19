@@ -7,17 +7,19 @@ import MainHeader from "./components/MainHeader";
 import TaskList from "./components/TaskList";
 
 // types
-import { RootState } from "./state/store";
+import { AppDispath, RootState } from "./state/store";
 
 // redux actions
 import { taskFormActions } from "./state/slices/taskFormSlice";
+import { tickClock } from "./state/slices/clockSlice";
+import { useEffect } from "react";
 
 type ComponentFunctions = {
   handleUpdateTask: HandleUpdateTask;
 };
 
 function App() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispath>();
   // get redux actions
   const {
     setTitle,
@@ -32,6 +34,10 @@ function App() {
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
 
   const { handleUpdateTask } = componentFunctions();
+
+  useEffect(() => {
+    dispatch(tickClock());
+  }, [dispatch]);
 
   return (
     <>
