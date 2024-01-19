@@ -8,7 +8,6 @@ import { TaskStatus } from "../state/slices/tasksSlice";
 
 // actions
 import { tasksActions } from "../state/slices/tasksSlice";
-import { RootState } from "@reduxjs/toolkit/query";
 
 type TaskListProps = {
   handleUpdateTask: HandleUpdateTask;
@@ -16,12 +15,12 @@ type TaskListProps = {
 
 function formatDate(dateObj: Date) {
   let d = dateObj;
-  return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
+  return `${d.toLocaleDateString()} ${d.getHours()}:${d.getMinutes()}`;
 }
 
 export default ({ handleUpdateTask }: TaskListProps) => {
   const dispatch = useDispatch();
-  const { deleteTask, triggerCompletion, setStatus } = tasksActions;
+  const { deleteTask, triggerCompletion } = tasksActions;
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
   const clock = useSelector((state: RootState) => state.clock.time);
   const currentDate = new Date(clock);
@@ -39,7 +38,7 @@ export default ({ handleUpdateTask }: TaskListProps) => {
           if (task.status === "active" && currentDate > dueDate) {
             // dispatch(setStatus({ id: task.id, status: "overdue" }));
           }
-          if (task.status === "overdue" && currentDate < dueDate){
+          if (task.status === "overdue" && currentDate < dueDate) {
             // dispatch(setStatus({ id: task.id, status: "active" }));
           }
           /* Task */

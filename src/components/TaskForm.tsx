@@ -144,7 +144,7 @@ export default () => {
                     title,
                     labelId,
                     status: "active",
-                    creationDate: "",
+                    creationDate,
                     dueDate,
                     description
                   })

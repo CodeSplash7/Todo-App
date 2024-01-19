@@ -28,6 +28,17 @@ let taskFormSlice = createSlice({
   reducers: {
     setTaskFormIsOpen(state, action: PayloadAction<boolean>) {
       state.taskFormIsOpen = action.payload;
+      state.creationDate = formatCreationDate();
+      function formatCreationDate() {
+        const currentDate = new Date();
+
+        const year = currentDate.getFullYear().toString().padStart(4, "0");
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+        const day = currentDate.getDate().toString().padStart(2, "0");
+        const hours = currentDate.getHours().toString().padStart(2, "0");
+        const minutes = currentDate.getMinutes().toString().padStart(2, "0");
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
     },
     setTitle(state, action: PayloadAction<string>) {
       state.title = action.payload;

@@ -56,7 +56,6 @@ let tasksSlice = createSlice({
     addTask(state, action: PayloadAction<TaskObject>) {
       const task = action.payload;
       task.id = state.tasks.length;
-      task.creationDate = formatCreationDate();
       state.tasks.push(task);
     },
     deleteTask(state, action: PayloadAction<number>) {
@@ -95,21 +94,6 @@ let tasksSlice = createSlice({
         return task;
       });
     },
-    setStatus(
-      state,
-      action: PayloadAction<{ id: number; status: TaskStatus }>
-    ) {
-      let targetTask = state.tasks.find(
-        (task) => task.id === action.payload.id
-      )!;
-      if (!targetTask) return;
-      targetTask.status = action.payload.status;
-      let newTasks = state.tasks.map((task) => {
-        if (task.id === action.payload.id) return targetTask;
-        return task;
-      });
-      state.tasks = newTasks;
-    }
   },
   extraReducers: (builder) => {
     builder.addCase(tickClock.fulfilled, (state) => {
@@ -130,14 +114,3 @@ let tasksSlice = createSlice({
 
 export default tasksSlice.reducer;
 export const tasksActions = tasksSlice.actions;
-
-function formatCreationDate() {
-  const currentDate = new Date();
-
-  const year = currentDate.getFullYear().toString().padStart(4, "0");
-  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-  const day = currentDate.getDate().toString().padStart(2, "0");
-  const hours = currentDate.getHours().toString().padStart(2, "0");
-  const minutes = currentDate.getMinutes().toString().padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
