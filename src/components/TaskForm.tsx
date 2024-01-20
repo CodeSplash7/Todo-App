@@ -30,6 +30,8 @@ export default () => {
     (state: RootState) => state.taskForm.description
   );
 
+  console.log(creationDate, dueDate);
+
   return (
     <ReactModal
       isOpen={taskFormIsOpen}
@@ -143,7 +145,7 @@ export default () => {
                     creationDate,
                     dueDate,
                     description,
-                    labelId,
+                    labelId
                   })
                 );
               }

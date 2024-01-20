@@ -22,23 +22,24 @@ const initialState: TaskFormState = {
   description: ""
 };
 
+function formatInputDate(date: Date) {
+  // const currentDate = new Date();
+
+  const year = date.getFullYear().toString().padStart(4, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+  const day = date.getDate().toString().padStart(2, "0");
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 let taskFormSlice = createSlice({
   name: "task-form",
   initialState,
   reducers: {
     setTaskFormIsOpen(state, action: PayloadAction<boolean>) {
       state.taskFormIsOpen = action.payload;
-      state.creationDate = formatCreationDate();
-      function formatCreationDate() {
-        const currentDate = new Date();
-
-        const year = currentDate.getFullYear().toString().padStart(4, "0");
-        const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-        const day = currentDate.getDate().toString().padStart(2, "0");
-        const hours = currentDate.getHours().toString().padStart(2, "0");
-        const minutes = currentDate.getMinutes().toString().padStart(2, "0");
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
-      }
+      state.creationDate = formatInputDate(new Date());
     },
     setTitle(state, action: PayloadAction<string>) {
       state.title = action.payload;
@@ -47,7 +48,7 @@ let taskFormSlice = createSlice({
       state.labelId = action.payload;
     },
     setDueDate(state, action: PayloadAction<string>) {
-      state.dueDate = action.payload;
+      state.dueDate = formatInputDate(new Date(action.payload));
     },
     setCreationDate(state, action: PayloadAction<string>) {
       state.creationDate = action.payload;

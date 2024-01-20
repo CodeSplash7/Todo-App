@@ -33,7 +33,7 @@ const handleFiltering = (state: InitialState) => {
     filtered = state.tasks.filter((task) => task.overdue === true);
   }
   state.filtered = filtered;
-  console.log("filtered bruv, look:", filtered, "__________________");
+  // console.log("filtered bruv, look:", filtered, "__________________");
 };
 
 const initialState: InitialState = {
