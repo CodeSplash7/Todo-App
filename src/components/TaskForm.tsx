@@ -12,13 +12,8 @@ import { tasksActions } from "../state/slices/tasksSlice";
 
 export default () => {
   const dispatch = useDispatch();
-  const {
-    setTitle,
-    setLabelId,
-    setDueDate,
-    setDescription,
-    resetForm
-  } = taskFormActions;
+  const { setTitle, setLabelId, setDueDate, setDescription, resetForm } =
+    taskFormActions;
   const { addTask, updateTask } = tasksActions;
 
   let taskFormIsOpen = useSelector(
@@ -128,7 +123,8 @@ export default () => {
                     info: {
                       title,
                       id,
-                      status: "active",
+                      active: true,
+                      overdue: new Date() > new Date(dueDate),
                       labelId,
                       creationDate,
                       dueDate,
@@ -142,11 +138,12 @@ export default () => {
                   addTask({
                     id: 0,
                     title,
-                    labelId,
-                    status: "active",
+                    active: true,
+                    overdue: new Date() > new Date(dueDate),
                     creationDate,
                     dueDate,
-                    description
+                    description,
+                    labelId,
                   })
                 );
               }

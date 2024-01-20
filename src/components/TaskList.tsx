@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 // types
 import { HandleUpdateTask } from "../App";
 import { RootState } from "../state/store";
-import { TaskStatus } from "../state/slices/tasksSlice";
 
 // actions
 import { tasksActions } from "../state/slices/tasksSlice";
@@ -16,15 +15,20 @@ type TaskListProps = {
 function formatDate(dateObj: Date) {
   let d = dateObj;
   if (isNaN(d.getTime())) return null;
-  return `${d.toLocaleDateString()} ${d.getHours()}:${d.getMinutes()}`;
+  const dateString = d.toLocaleDateString();
+  let hoursString = String(d.getHours());
+  if (hoursString.length < 2) hoursString = "0" + hoursString;
+  let hoursMinutes = String(d.getMinutes());
+  if (hoursMinutes.length < 2) hoursMinutes = "0" + hoursMinutes;
+  return `${dateString} ${hoursString}:${hoursMinutes}`;
 }
 
 export default ({ handleUpdateTask }: TaskListProps) => {
   const dispatch = useDispatch();
   const { deleteTask, triggerCompletion } = tasksActions;
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
-  const clock = useSelector((state: RootState) => state.clock.time);
-  const currentDate = new Date(clock);
+  // const clock = useSelector((state: RootState) => state.clock.time);
+  // const currentDate = new Date(clock);
   let tasksExist = tasks.length > 0;
 
   return (
@@ -33,35 +37,28 @@ export default ({ handleUpdateTask }: TaskListProps) => {
         tasks.map((task, index) => {
           let creationDate = new Date(task.creationDate);
           let dueDate = new Date(task.dueDate);
-          // if (task.status === "completed") {
-          //   console.log(task.title);
-          // }
-          if (task.status === "active" && currentDate > dueDate) {
-            // dispatch(setStatus({ id: task.id, status: "overdue" }));
-          }
-          if (task.status === "overdue" && currentDate < dueDate) {
-            // dispatch(setStatus({ id: task.id, status: "active" }));
-          }
+
           /* Task */
           return (
             <div
               key={index}
               className={`text-white group w-full flex flex-col h-fit relative
-                ${task.status === "completed" ? "opacity-[20%]" : ""}
+                ${task.active ? "" : "opacity-[20%]"}
               `}
             >
-              <TaskTopDetails dueDate={dueDate} taskStatus={task.status} />
+              <TaskTopDetails dueDate={dueDate} isTaskActive={task.active} />
               <TaskMainDetails
                 taskCount={index + 1}
                 taskTitle={task.title}
-                taskStatus={task.status}
+                isTaskActive={task.active}
+                isTaskOverdue={task.overdue}
                 triggerCompletion={() => dispatch(triggerCompletion(task.id))}
               />
               <TaskBottomDetails
                 creationDate={creationDate}
                 updateTask={() => handleUpdateTask(task.id)}
                 deleteTask={() => dispatch(deleteTask(task.id))}
-                taskStatus={task.status}
+                isTaskActive={task.active}
               />
             </div>
           );
@@ -72,16 +69,16 @@ export default ({ handleUpdateTask }: TaskListProps) => {
 
 type TaskTopDetailsProps = {
   dueDate: Date;
-  taskStatus: TaskStatus;
+  isTaskActive: boolean;
 };
-const TaskTopDetails = ({ dueDate, taskStatus }: TaskTopDetailsProps) => {
+const TaskTopDetails = ({ dueDate, isTaskActive }: TaskTopDetailsProps) => {
   return (
     <div className=" [tranistion-property:all] duration-150 ease-linear flex justify-between h-0 group-hover:h-[40px] overflow-hidden relative">
       {/* Task creation date */}
       <div className="w-full flex justify-end [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
         <div
           className={`bg-red-900 h-full flex items-center px-[20px] rounded-t-sm
-          ${taskStatus === "overdue" ? "text-red-500" : ""}
+          ${isTaskActive ? "" : "text-red-500"}
         `}
         >
           <div>Due Date: {formatDate(dueDate) ?? "No Constrains"}</div>
@@ -95,14 +92,14 @@ type TaskBottomDetailsProps = {
   creationDate: Date;
   updateTask: () => void;
   deleteTask: () => void;
-  taskStatus: TaskStatus;
+  isTaskActive: boolean;
 };
 
 const TaskBottomDetails = ({
   creationDate,
   updateTask,
   deleteTask,
-  taskStatus
+  isTaskActive
 }: TaskBottomDetailsProps) => {
   return (
     <div className="[tranistion-property:all] duration-150 ease-linear flex justify-between h-0 group-hover:h-[40px] overflow-hidden relative">
@@ -119,7 +116,7 @@ const TaskBottomDetails = ({
       {/* Task due date */}
       <div className="w-full flex justify-center [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[-100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
         <div
-          onClick={() => (taskStatus !== "completed" ? updateTask() : null)}
+          onClick={() => (isTaskActive ? updateTask() : null)}
           className="transition duration-150 hover:text-green-500 underline bg-red-900 h-full flex items-center px-[20px] rounded-b-sm"
         >
           See Details
@@ -140,13 +137,15 @@ const TaskBottomDetails = ({
 type TaskMainDetailsProps = {
   taskCount: number;
   taskTitle: string;
-  taskStatus: TaskStatus;
+  isTaskActive: boolean;
+  isTaskOverdue: boolean;
   triggerCompletion: () => void;
 };
 const TaskMainDetails = ({
   taskCount,
   taskTitle,
-  taskStatus,
+  isTaskOverdue,
+  isTaskActive,
   triggerCompletion
 }: TaskMainDetailsProps) => {
   // const dispatch = useDispatch();
@@ -154,11 +153,7 @@ const TaskMainDetails = ({
   return (
     <div
       className={`border-blackborder-[1px] bg-slate-700 flex justify-between px-[20px] py-[10px]
-      ${
-        taskStatus === "overdue"
-          ? "border-red-500 text-red-500  border-[2px]"
-          : ""
-      }
+      ${isTaskOverdue ? "border-red-500 text-red-500  border-[2px]" : ""}
     `}
     >
       {/* Task number */}
@@ -170,7 +165,7 @@ const TaskMainDetails = ({
         className="border h-[25px] w-[25px] flex justify-center items-center"
         onClick={triggerCompletion}
       >
-        {taskStatus === "completed" ? "√" : ""}
+        {isTaskActive ? "" : "√"}
       </div>
     </div>
   );

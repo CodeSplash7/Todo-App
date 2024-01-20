@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TaskForm from "./components/TaskForm";
 import MainHeader from "./components/MainHeader";
 import TaskList from "./components/TaskList";
+import Filter from "./components/Filter";
 
 // types
 import { AppDispath, RootState } from "./state/store";
@@ -13,6 +14,7 @@ import { AppDispath, RootState } from "./state/store";
 import { taskFormActions } from "./state/slices/taskFormSlice";
 import { tickClock } from "./state/slices/clockSlice";
 import { useEffect } from "react";
+import { tasksActions } from "./state/slices/tasksSlice";
 
 type ComponentFunctions = {
   handleUpdateTask: HandleUpdateTask;
@@ -30,6 +32,8 @@ function App() {
     setTaskFormIsOpen,
     setId
   } = taskFormActions;
+
+  const { filterTasks } = tasksActions;
   // state
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
 
@@ -37,15 +41,26 @@ function App() {
 
   useEffect(() => {
     dispatch(tickClock());
+    dispatch(filterTasks("active"));
   }, [dispatch]);
 
   return (
     <>
       <TaskForm />
       {/* Whole page */}
-      <div className="px-[200px] pt-[100px] flex flex-col items-center gap-[20px]">
-        <MainHeader />
-        <TaskList handleUpdateTask={handleUpdateTask} />
+      <div className="flex">
+        {/* Page left */}
+        <div className="flex-1 pt-[100px] flex justify-center">
+          {/* Page left */}
+          <Filter />
+        </div>
+        {/* Page center */}
+        <div className="flex-[1.5] pt-[100px] flex flex-col items-center gap-[20px]">
+          <MainHeader />
+          <TaskList handleUpdateTask={handleUpdateTask} />
+        </div>
+        {/* Page right */}
+        <div className="flex-1">RIGHT</div>
       </div>
     </>
   );
