@@ -26,15 +26,15 @@ function formatDate(dateObj: Date) {
 export default ({ handleUpdateTask }: TaskListProps) => {
   const dispatch = useDispatch();
   const { deleteTask, triggerCompletion } = tasksActions;
-  const tasks = useSelector((state: RootState) => state.tasks.tasks);
+  const filteredTasks = useSelector((state: RootState) => state.tasks.filtered);
   // const clock = useSelector((state: RootState) => state.clock.time);
   // const currentDate = new Date(clock);
-  let tasksExist = tasks.length > 0;
+  let tasksExist = filteredTasks.length > 0;
 
   return (
     <div className="flex flex-col w-full h-fit gap-[10px] relative">
       {tasksExist &&
-        tasks.map((task, index) => {
+        filteredTasks.map((task, index) => {
           let creationDate = new Date(task.creationDate);
           let dueDate = new Date(task.dueDate);
 
@@ -46,7 +46,11 @@ export default ({ handleUpdateTask }: TaskListProps) => {
                 ${task.active ? "" : "opacity-[20%]"}
               `}
             >
-              <TaskTopDetails dueDate={dueDate} isTaskActive={task.active} />
+              <TaskTopDetails
+                dueDate={dueDate}
+                isTaskActive={task.active}
+                isTaskOverdue={task.overdue}
+              />
               <TaskMainDetails
                 taskCount={index + 1}
                 taskTitle={task.title}
@@ -70,15 +74,20 @@ export default ({ handleUpdateTask }: TaskListProps) => {
 type TaskTopDetailsProps = {
   dueDate: Date;
   isTaskActive: boolean;
+  isTaskOverdue: boolean;
 };
-const TaskTopDetails = ({ dueDate, isTaskActive }: TaskTopDetailsProps) => {
+const TaskTopDetails = ({
+  dueDate,
+  isTaskActive,
+  isTaskOverdue
+}: TaskTopDetailsProps) => {
   return (
     <div className=" [tranistion-property:all] duration-150 ease-linear flex justify-between h-0 group-hover:h-[40px] overflow-hidden relative">
       {/* Task creation date */}
       <div className="w-full flex justify-end [tranistion-property:all] duration-100 ease-linear delay-[250ms] relative top-[100%] group-hover:top-0 invisible group-hover:visible h-full px-[10px]">
         <div
           className={`bg-red-900 h-full flex items-center px-[20px] rounded-t-sm
-          ${isTaskActive ? "" : "text-red-500"}
+          ${isTaskOverdue && isTaskActive ? "text-red-500" : ""}
         `}
         >
           <div>Due Date: {formatDate(dueDate) ?? "No Constrains"}</div>
@@ -153,7 +162,11 @@ const TaskMainDetails = ({
   return (
     <div
       className={`border-blackborder-[1px] bg-slate-700 flex justify-between px-[20px] py-[10px]
-      ${isTaskOverdue ? "border-red-500 text-red-500  border-[2px]" : ""}
+      ${
+        isTaskActive && isTaskOverdue
+          ? "border-red-500 text-red-500  border-[2px]"
+          : ""
+      }
     `}
     >
       {/* Task number */}

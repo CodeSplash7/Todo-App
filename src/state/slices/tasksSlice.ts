@@ -1,17 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { tickClock } from "./clockSlice";
 
-// export type TaskStatus = "active" | "completed";
-// type Filter = TaskStatus | "all";
-type Filter = "active" | "completed" | "all";
-
-type StatusPossibilities =
-  | {
-      active: true;
-      overdue: true;
-    }
-  | { active: true; overdue: false }
-  | { active: false; overdue: false };
+type Filter = "active" | "completed" | "overdue" | "all";
 
 export type TaskObject = {
   id: number;
@@ -20,7 +10,9 @@ export type TaskObject = {
   labelId: number;
   creationDate: string;
   dueDate: string;
-} & StatusPossibilities;
+  active: boolean;
+  overdue: boolean;
+};
 
 type InitialState = {
   tasks: TaskObject[];
@@ -29,9 +21,19 @@ type InitialState = {
 };
 
 const handleFiltering = (state: InitialState) => {
-  // let filtered = state.tasks.filter((task) => task.status === state.filter);
-  // state.filtered = filtered;
-  // console.log("filtered bruv, look:", filtered, "__________________");
+  const { filter } = state;
+  let filtered = state.tasks;
+  if (filter === "active" || filter === "completed") {
+    let filterActive: boolean;
+    if (filter === "active") filterActive = true;
+    if (filter === "completed") filterActive = false;
+    filtered = state.tasks.filter((task) => task.active === filterActive);
+  }
+  if (filter === "overdue") {
+    filtered = state.tasks.filter((task) => task.overdue === true);
+  }
+  state.filtered = filtered;
+  console.log("filtered bruv, look:", filtered, "__________________");
 };
 
 const initialState: InitialState = {
@@ -123,11 +125,12 @@ let tasksSlice = createSlice({
         let dueDate = new Date(task.dueDate);
         let currentDate = new Date();
 
-        if (dueDate < currentDate && task.active) {
+        if (dueDate < currentDate && !task.overdue && task.active) {
           task.overdue = true;
           handleFiltering(state);
         }
         if (dueDate > currentDate && task.overdue) {
+          task.overdue = false;
           task.active = true;
           handleFiltering(state);
         }

@@ -41,7 +41,7 @@ function App() {
 
   useEffect(() => {
     dispatch(tickClock());
-    dispatch(filterTasks("active"));
+    dispatch(filterTasks("all"));
   }, [dispatch]);
 
   return (
