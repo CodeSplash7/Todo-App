@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { tickClock } from "./clockSlice";
 
-type Filter = "active" | "completed" | "overdue" | "all";
+type Filter = "active" | "completed" | "overdue" | null;
+type Sorting = "creation" | "deadline" | "status" | null;
 
 export type TaskObject = {
   id: number;
@@ -16,24 +17,64 @@ export type TaskObject = {
 
 type InitialState = {
   tasks: TaskObject[];
-  filtered: TaskObject[];
+  // filtered: TaskObject[];
   filter: Filter;
+  sorting: Sorting;
+  // sorted: TaskObject[];
+  tasksToShow: TaskObject[];
 };
 
 const handleFiltering = (state: InitialState) => {
   const { filter } = state;
-  let filtered = state.tasks;
+  let tasksToFilter = JSON.parse(JSON.stringify(state.tasks)) as TaskObject[];
+  let filtered: TaskObject[] = [];
   if (filter === "active" || filter === "completed") {
     let filterActive: boolean;
     if (filter === "active") filterActive = true;
     if (filter === "completed") filterActive = false;
-    filtered = state.tasks.filter((task) => task.active === filterActive);
+    filtered = tasksToFilter.filter((task) => task.active === filterActive);
   }
   if (filter === "overdue") {
     filtered = state.tasks.filter((task) => task.overdue === true);
   }
-  state.filtered = filtered;
-  // console.log("filtered bruv, look:", filtered, "__________________");
+  if (filter === null) filtered = tasksToFilter;
+  return filtered;
+};
+
+const handleSorting = (state: InitialState) => {
+  const { sorting } = state;
+  let tasksToSort = JSON.parse(JSON.stringify(state.tasks)) as TaskObject[];
+  let sorted: TaskObject[] = [];
+  if (sorting === "creation") {
+    sorted = tasksToSort.sort(
+      (a, b) =>
+        new Date(a.creationDate).getTime() + new Date(b.creationDate).getTime()
+    );
+  }
+  if (sorting === "deadline") {
+    let tasksWithNoDeadline = tasksToSort.filter((task) => !task.dueDate);
+    let tasksWithDeadline = tasksToSort.filter((task) => task.dueDate);
+
+    sorted = [...tasksWithNoDeadline, ...tasksWithDeadline.sort(
+      (a, b) =>
+        new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+    )]
+  }
+  if (sorting === "status") {
+    let overdueTasks = tasksToSort.filter((task) => task.overdue);
+    let activeTasks = tasksToSort.filter((task) => task.active && !task.overdue)
+    let completedTasks = tasksToSort.filter((task) => !task.active)
+    sorted = [...overdueTasks, ...activeTasks, ...completedTasks]
+  }
+  if (sorting === null) sorted = tasksToSort;
+  return sorted;
+};
+
+const handleOrdering = (state: InitialState) => {
+  let tasksToShow = state.tasks;
+  if (state.filter) tasksToShow = handleFiltering(state);
+  if (state.sorting) tasksToShow = handleSorting(state);
+  state.tasksToShow = tasksToShow;
 };
 
 const initialState: InitialState = {
@@ -69,29 +110,40 @@ const initialState: InitialState = {
       dueDate: new Date().toISOString()
     }
   ],
-  filtered: [],
-  filter: "all"
+  // filtered: [],
+  filter: null,
+  // sorted: [],
+  sorting: null,
+  tasksToShow: []
 };
 
 let tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
+    sortTasks(state, action: PayloadAction<Sorting>) {
+      state.filter = null;
+      state.sorting = action.payload;
+      // handleFiltering(state);
+      state.tasksToShow = handleSorting(state);
+    },
     filterTasks(state, action: PayloadAction<Filter>) {
+      state.sorting = null;
       state.filter = action.payload;
-      handleFiltering(state);
+      state.tasksToShow = handleFiltering(state);
+      // handleSorting(state);
     },
     addTask(state, action: PayloadAction<TaskObject>) {
       const task = action.payload;
       task.id = state.tasks.length;
       state.tasks.push(task);
-      handleFiltering(state);
+      handleOrdering(state);
     },
     deleteTask(state, action: PayloadAction<number>) {
       const taskId = action.payload;
       const newTasks = state.tasks.filter((task) => task.id !== taskId);
       state.tasks = newTasks;
-      handleFiltering(state);
+      handleOrdering(state);
     },
     updateTask(state, action: PayloadAction<{ id: number; info: TaskObject }>) {
       let targetedTask = state.tasks.find(
@@ -104,7 +156,7 @@ let tasksSlice = createSlice({
         }
         return task;
       });
-      handleFiltering(state);
+      handleOrdering(state);
     },
     triggerCompletion(state, action: PayloadAction<number>) {
       let targetedTask = state.tasks.find((task) => task.id === action.payload);
@@ -116,7 +168,7 @@ let tasksSlice = createSlice({
         }
         return task;
       });
-      handleFiltering(state);
+      handleOrdering(state);
     }
   },
   extraReducers: (builder) => {
@@ -127,12 +179,12 @@ let tasksSlice = createSlice({
 
         if (dueDate < currentDate && !task.overdue && task.active) {
           task.overdue = true;
-          handleFiltering(state);
+          handleOrdering(state);
         }
         if (dueDate > currentDate && task.overdue) {
           task.overdue = false;
           task.active = true;
-          handleFiltering(state);
+          handleOrdering(state);
         }
       });
     });

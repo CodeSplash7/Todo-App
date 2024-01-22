@@ -30,8 +30,6 @@ export default () => {
     (state: RootState) => state.taskForm.description
   );
 
-  console.log(creationDate, dueDate);
-
   return (
     <ReactModal
       isOpen={taskFormIsOpen}

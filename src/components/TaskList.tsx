@@ -26,15 +26,13 @@ function formatDate(dateObj: Date) {
 export default ({ handleUpdateTask }: TaskListProps) => {
   const dispatch = useDispatch();
   const { deleteTask, triggerCompletion } = tasksActions;
-  const filteredTasks = useSelector((state: RootState) => state.tasks.filtered);
-  // const clock = useSelector((state: RootState) => state.clock.time);
-  // const currentDate = new Date(clock);
-  let tasksExist = filteredTasks.length > 0;
+  const tasksToRender = useSelector((state: RootState) => state.tasks.tasksToShow);
+  let tasksExist = tasksToRender.length > 0;
 
   return (
     <div className="flex flex-col w-full h-fit gap-[10px] relative">
       {tasksExist &&
-        filteredTasks.map((task, index) => {
+        tasksToRender.map((task, index) => {
           let creationDate = new Date(task.creationDate);
           let dueDate = new Date(task.dueDate);
 

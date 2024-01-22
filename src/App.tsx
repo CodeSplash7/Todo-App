@@ -6,6 +6,7 @@ import TaskForm from "./components/TaskForm";
 import MainHeader from "./components/MainHeader";
 import TaskList from "./components/TaskList";
 import Filter from "./components/Filter";
+import Sort from "./components/Sort";
 
 // types
 import { AppDispath, RootState } from "./state/store";
@@ -33,7 +34,7 @@ function App() {
     setId
   } = taskFormActions;
 
-  const { filterTasks } = tasksActions;
+  const { filterTasks, sortTasks } = tasksActions;
   // state
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
 
@@ -41,7 +42,8 @@ function App() {
 
   useEffect(() => {
     dispatch(tickClock());
-    dispatch(filterTasks("all"));
+    dispatch(filterTasks(null));
+    dispatch(sortTasks(null));
   }, [dispatch]);
 
   return (
@@ -50,9 +52,9 @@ function App() {
       {/* Whole page */}
       <div className="flex">
         {/* Page left */}
-        <div className="flex-1 pt-[100px] flex justify-center">
-          {/* Page left */}
+        <div className="flex-1 pt-[100px] flex flex-col items-center gap-[30px]">
           <Filter />
+          <Sort />
         </div>
         {/* Page center */}
         <div className="flex-[1.5] pt-[100px] flex flex-col items-center gap-[20px]">

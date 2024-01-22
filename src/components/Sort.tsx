@@ -1,38 +1,32 @@
 import { useDispatch } from "react-redux";
 import { tasksActions } from "../state/slices/tasksSlice";
 
-function Filter() {
+function Sort() {
   const dispatch = useDispatch();
-  const { filterTasks } = tasksActions;
+  const { sortTasks } = tasksActions;
   return (
     <>
       {/* Filters */}
       <div className="text-white flex flex-col gap-[5px] w-[150px]">
         <label className="text-[17px]" htmlFor="filters">
-          Show:
+          Sort by:
         </label>
         {/* filtering button */}
         <div className="flex flex-col" id="filters">
           <div
-            onClick={() => dispatch(filterTasks("active"))}
+            onClick={() => dispatch(sortTasks("creation"))}
             className="border"
           >
-            Active only
+            Creation date
           </div>
-          <div
-            onClick={() => dispatch(filterTasks("completed"))}
-            className="border"
-          >
-            Completed only
+          <div onClick={() => dispatch(sortTasks("deadline"))} className="border">
+            Due date
           </div>
-          <div
-            onClick={() => dispatch(filterTasks("overdue"))}
-            className="border"
-          >
-            Overdue only
+          <div onClick={() => dispatch(sortTasks("status"))} className="border">
+            Status
           </div>
-          <div onClick={() => dispatch(filterTasks(null))} className="border">
-            All
+          <div onClick={() => dispatch(sortTasks(null))} className="border">
+            No sorting
           </div>
         </div>
       </div>
@@ -40,4 +34,4 @@ function Filter() {
   );
 }
 
-export default Filter;
+export default Sort;
