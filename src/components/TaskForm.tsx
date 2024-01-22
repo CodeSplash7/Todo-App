@@ -19,6 +19,7 @@ export default () => {
   let taskFormIsOpen = useSelector(
     (state: RootState) => state.taskForm.taskFormIsOpen
   );
+  let taskLabels = useSelector((state: RootState) => state.labels.labels);
   let id = useSelector((state: RootState) => state.taskForm.id);
   let title = useSelector((state: RootState) => state.taskForm.title);
   let labelId = useSelector((state: RootState) => state.taskForm.labelId);
@@ -72,7 +73,12 @@ export default () => {
               className="rounded py-[5px] px-[10px] bg-[#333] text-white outline-none"
               id="label-input"
             >
-              <option>ex. lableName1</option>
+              <option value="-1">No label</option>
+              {taskLabels.map((label) => (
+                <option style={{background: label.color}} className="[text-shadow:1px_1px_black]" key={label.id} value={label.id}>
+                  {label.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>

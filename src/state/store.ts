@@ -3,12 +3,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import TasksReducer from "./slices/tasksSlice";
 import TaskFormReducer from "./slices/taskFormSlice";
 import ClockReducer from "./slices/clockSlice";
+import LabelReducer from "./slices/labelsSlice";
 
 const store = configureStore({
   reducer: {
     tasks: TasksReducer,
     taskForm: TaskFormReducer,
-    clock: ClockReducer
+    clock: ClockReducer,
+    labels: LabelReducer
   }
 });
 

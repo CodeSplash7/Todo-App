@@ -17,10 +17,8 @@ export type TaskObject = {
 
 type InitialState = {
   tasks: TaskObject[];
-  // filtered: TaskObject[];
   filter: Filter;
   sorting: Sorting;
-  // sorted: TaskObject[];
   tasksToShow: TaskObject[];
 };
 
@@ -55,16 +53,20 @@ const handleSorting = (state: InitialState) => {
     let tasksWithNoDeadline = tasksToSort.filter((task) => !task.dueDate);
     let tasksWithDeadline = tasksToSort.filter((task) => task.dueDate);
 
-    sorted = [...tasksWithNoDeadline, ...tasksWithDeadline.sort(
-      (a, b) =>
-        new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-    )]
+    sorted = [
+      ...tasksWithNoDeadline,
+      ...tasksWithDeadline.sort(
+        (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+      )
+    ];
   }
   if (sorting === "status") {
     let overdueTasks = tasksToSort.filter((task) => task.overdue);
-    let activeTasks = tasksToSort.filter((task) => task.active && !task.overdue)
-    let completedTasks = tasksToSort.filter((task) => !task.active)
-    sorted = [...overdueTasks, ...activeTasks, ...completedTasks]
+    let activeTasks = tasksToSort.filter(
+      (task) => task.active && !task.overdue
+    );
+    let completedTasks = tasksToSort.filter((task) => !task.active);
+    sorted = [...overdueTasks, ...activeTasks, ...completedTasks];
   }
   if (sorting === null) sorted = tasksToSort;
   return sorted;
@@ -105,14 +107,12 @@ const initialState: InitialState = {
       description: "This is a random task. #3",
       active: true,
       overdue: true,
-      labelId: 1,
+      labelId: 0,
       creationDate: new Date().toISOString(),
       dueDate: new Date().toISOString()
     }
   ],
-  // filtered: [],
   filter: null,
-  // sorted: [],
   sorting: null,
   tasksToShow: []
 };
@@ -124,14 +124,12 @@ let tasksSlice = createSlice({
     sortTasks(state, action: PayloadAction<Sorting>) {
       state.filter = null;
       state.sorting = action.payload;
-      // handleFiltering(state);
       state.tasksToShow = handleSorting(state);
     },
     filterTasks(state, action: PayloadAction<Filter>) {
       state.sorting = null;
       state.filter = action.payload;
       state.tasksToShow = handleFiltering(state);
-      // handleSorting(state);
     },
     addTask(state, action: PayloadAction<TaskObject>) {
       const task = action.payload;

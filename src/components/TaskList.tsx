@@ -26,7 +26,10 @@ function formatDate(dateObj: Date) {
 export default ({ handleUpdateTask }: TaskListProps) => {
   const dispatch = useDispatch();
   const { deleteTask, triggerCompletion } = tasksActions;
-  const tasksToRender = useSelector((state: RootState) => state.tasks.tasksToShow);
+  const taskLabels = useSelector((state: RootState) => state.labels.labels);
+  const tasksToRender = useSelector(
+    (state: RootState) => state.tasks.tasksToShow
+  );
   let tasksExist = tasksToRender.length > 0;
 
   return (
@@ -35,6 +38,9 @@ export default ({ handleUpdateTask }: TaskListProps) => {
         tasksToRender.map((task, index) => {
           let creationDate = new Date(task.creationDate);
           let dueDate = new Date(task.dueDate);
+          let taskLabel = taskLabels.find((label) => label.id === task.labelId);
+          let taskLabelColor = "#334155";
+          if (taskLabel) taskLabelColor = taskLabel.color;
 
           /* Task */
           return (
@@ -52,6 +58,7 @@ export default ({ handleUpdateTask }: TaskListProps) => {
               <TaskMainDetails
                 taskCount={index + 1}
                 taskTitle={task.title}
+                taskLabelColor={taskLabelColor}
                 isTaskActive={task.active}
                 isTaskOverdue={task.overdue}
                 triggerCompletion={() => dispatch(triggerCompletion(task.id))}
@@ -144,6 +151,7 @@ const TaskBottomDetails = ({
 type TaskMainDetailsProps = {
   taskCount: number;
   taskTitle: string;
+  taskLabelColor: string;
   isTaskActive: boolean;
   isTaskOverdue: boolean;
   triggerCompletion: () => void;
@@ -151,6 +159,7 @@ type TaskMainDetailsProps = {
 const TaskMainDetails = ({
   taskCount,
   taskTitle,
+  taskLabelColor,
   isTaskOverdue,
   isTaskActive,
   triggerCompletion
@@ -159,10 +168,11 @@ const TaskMainDetails = ({
   // const { triggerCompletion } = tasksActions;
   return (
     <div
-      className={`border-blackborder-[1px] bg-slate-700 flex justify-between px-[20px] py-[10px]
+    style={{borderColor: taskLabelColor}}
+      className={`flex justify-between px-[20px] py-[10px] bg-slate-700 border-[5px]
       ${
         isTaskActive && isTaskOverdue
-          ? "border-red-500 text-red-500  border-[2px]"
+          ? "bg-red-700 text-white"
           : ""
       }
     `}
