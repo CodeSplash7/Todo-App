@@ -16,6 +16,7 @@ import { taskFormActions } from "./state/slices/taskFormSlice";
 import { tickClock } from "./state/slices/clockSlice";
 import { useEffect } from "react";
 import { tasksActions } from "./state/slices/tasksSlice";
+import Labels from "./components/Labels";
 
 type ComponentFunctions = {
   handleUpdateTask: HandleUpdateTask;
@@ -62,7 +63,9 @@ function App() {
           <TaskList handleUpdateTask={handleUpdateTask} />
         </div>
         {/* Page right */}
-        <div className="flex-1">RIGHT</div>
+        <div className="flex-1 pt-[100px] flex flex-col items-center w-full">
+          <Labels />
+        </div>
       </div>
     </>
   );

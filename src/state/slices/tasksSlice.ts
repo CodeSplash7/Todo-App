@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { tickClock } from "./clockSlice";
 
-type Filter = "active" | "completed" | "overdue" | null;
+type Filter = "active" | "completed" | "overdue" | null | `label${number}`;
 type Sorting = "creation" | "deadline" | "status" | null;
 
 export type TaskObject = {
@@ -35,7 +35,12 @@ const handleFiltering = (state: InitialState) => {
   if (filter === "overdue") {
     filtered = state.tasks.filter((task) => task.overdue === true);
   }
+  if (filter?.slice(0, 5) === "label") {
+    const labelId = Number(filter.slice(5, filter.length));
+    filtered = state.tasks.filter((task) => task.labelId === labelId);
+  }
   if (filter === null) filtered = tasksToFilter;
+
   return filtered;
 };
 
