@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { tickClock } from "./clockSlice";
 
+import { labelsActions } from "./labelsSlice";
+import { generateRandomId } from "../helperFunctions";
+
 type Filter = "active" | "completed" | "overdue" | null | `label${number}`;
 type Sorting = "creation" | "deadline" | "status" | null;
 
@@ -138,7 +141,7 @@ let tasksSlice = createSlice({
     },
     addTask(state, action: PayloadAction<TaskObject>) {
       const task = action.payload;
-      task.id = state.tasks.length;
+      task.id = generateRandomId();
       state.tasks.push(task);
       handleOrdering(state);
     },
@@ -191,6 +194,24 @@ let tasksSlice = createSlice({
         }
       });
     });
+    builder.addCase(
+      labelsActions.removeLabel,
+      (state, action: PayloadAction<number>) => {
+        state.tasks = state.tasks.map((task) => {
+          if (task.labelId === action.payload) {
+            task.labelId = -1;
+          }
+          return task;
+        });
+        let isFilteringByTheRemovedLabel =
+          state.filter?.slice(0, 5) === "label" &&
+          Number(state.filter.slice(5, state.filter.length)) === action.payload;
+        if (isFilteringByTheRemovedLabel) {
+          state.filter = null;
+          handleOrdering(state);
+        }
+      }
+    );
   }
 });
 

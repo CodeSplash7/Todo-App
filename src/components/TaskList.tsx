@@ -40,7 +40,8 @@ export default ({ handleUpdateTask }: TaskListProps) => {
           let dueDate = new Date(task.dueDate);
           let taskLabel = taskLabels.find((label) => label.id === task.labelId);
           let taskLabelColor = "#334155";
-          if (taskLabel) taskLabelColor = taskLabel.color;
+          if (taskLabel && taskLabel.color !== "")
+            taskLabelColor = taskLabel.color;
 
           /* Task */
           return (
@@ -168,13 +169,9 @@ const TaskMainDetails = ({
   // const { triggerCompletion } = tasksActions;
   return (
     <div
-    style={{borderColor: taskLabelColor}}
+      style={{ borderColor: taskLabelColor }}
       className={`flex justify-between px-[20px] py-[10px] bg-slate-700 border-[5px]
-      ${
-        isTaskActive && isTaskOverdue
-          ? "bg-red-700 text-white"
-          : ""
-      }
+      ${isTaskActive && isTaskOverdue ? "bg-red-700 text-white" : ""}
     `}
     >
       {/* Task number */}

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { generateRandomId } from "../helperFunctions";
 
 type Label = {
   id: number;
@@ -34,19 +35,31 @@ const labelsSlice = createSlice({
   name: "labels",
   initialState,
   reducers: {
-    addLabel(state, action: PayloadAction<{ name: string; color: string }>) {
-      let { name, color } = action.payload;
-      let newLabelId = state.labels.length + 1;
-      state.labels.push({ name, color, id: newLabelId });
-    },
     removeLabel(state, action: PayloadAction<number>) {
       state.labels = state.labels.filter(
         (label) => label.id !== action.payload
       );
+    },
+    updateLabel(
+      state,
+      action: PayloadAction<{
+        id: number;
+        info: { name?: string; color?: string };
+      }>
+    ) {
+      let newLabels = state.labels.map((label) => {
+        if (label.id === action.payload.id) {
+          label = { ...label, ...action.payload.info };
+        }
+        return label;
+      });
+      state.labels = newLabels;
+    },
+    addLabel(state) {
+      state.labels.push({ id: generateRandomId(), name: "", color: "" });
     }
   }
 });
 
 export default labelsSlice.reducer;
 export const labelsActions = labelsSlice.actions;
-
