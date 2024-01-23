@@ -1,9 +1,18 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { tasksActions } from "../state/slices/tasksSlice";
+import { Sorting } from "../state/slices/tasksSlice";
+import { RootState } from "../state/store";
 
 function Sort() {
   const dispatch = useDispatch();
   const { sortTasks } = tasksActions;
+  const currentSorting = useSelector((state: RootState) => state.tasks.sorting)
+  const sortings: { sortingTerm: Sorting; labeling: string }[] = [
+    { sortingTerm: "creation", labeling: "Creation Date" },
+    { sortingTerm: "deadline", labeling: "Due Date" },
+    { sortingTerm: "status", labeling: "Status" },
+    { sortingTerm: null, labeling: "No Sorting" }
+  ];
   return (
     <>
       {/* Filters */}
@@ -13,21 +22,14 @@ function Sort() {
         </label>
         {/* filtering button */}
         <div className="flex flex-col" id="filters">
-          <div
-            onClick={() => dispatch(sortTasks("creation"))}
-            className="border"
-          >
-            Creation date
-          </div>
-          <div onClick={() => dispatch(sortTasks("deadline"))} className="border">
-            Due date
-          </div>
-          <div onClick={() => dispatch(sortTasks("status"))} className="border">
-            Status
-          </div>
-          <div onClick={() => dispatch(sortTasks(null))} className="border">
-            No sorting
-          </div>
+          {sortings.map((sorting) => (
+            <div
+              onClick={() => dispatch(sortTasks(sorting.sortingTerm))}
+              className={`border ${currentSorting === sorting.sortingTerm ? "bg-white text-black" : ""}`}
+            >
+              {sorting.labeling}
+            </div>
+          ))}
         </div>
       </div>
     </>

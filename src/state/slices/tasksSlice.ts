@@ -4,8 +4,13 @@ import { tickClock } from "./clockSlice";
 import { labelsActions } from "./labelsSlice";
 import { generateRandomId } from "../helperFunctions";
 
-type Filter = "active" | "completed" | "overdue" | null | `label${number}`;
-type Sorting = "creation" | "deadline" | "status" | null;
+export type Filter =
+  | "active"
+  | "completed"
+  | "overdue"
+  | null
+  | `label${number}`;
+export type Sorting = "creation" | "deadline" | "status" | null;
 
 export type TaskObject = {
   id: number;
@@ -51,13 +56,26 @@ const handleSorting = (state: InitialState) => {
   const { sorting } = state;
   let tasksToSort = JSON.parse(JSON.stringify(state.tasks)) as TaskObject[];
   let sorted: TaskObject[] = [];
-  if (sorting === "creation") {
+
+  if (sorting === null) {
+    sorted = tasksToSort;
+    return sorted;
+  }
+
+  let sortingTerm: string = "";
+  let sortingOrder: string = "";
+
+  if (sorting) {
+    [sortingTerm, sortingOrder] = sorting.split("-");
+  }
+
+  if (sortingTerm === "creation") {
     sorted = tasksToSort.sort(
       (a, b) =>
         new Date(a.creationDate).getTime() + new Date(b.creationDate).getTime()
     );
   }
-  if (sorting === "deadline") {
+  if (sortingTerm === "deadline") {
     let tasksWithNoDeadline = tasksToSort.filter((task) => !task.dueDate);
     let tasksWithDeadline = tasksToSort.filter((task) => task.dueDate);
 
@@ -68,7 +86,7 @@ const handleSorting = (state: InitialState) => {
       )
     ];
   }
-  if (sorting === "status") {
+  if (sortingTerm === "status") {
     let overdueTasks = tasksToSort.filter((task) => task.overdue);
     let activeTasks = tasksToSort.filter(
       (task) => task.active && !task.overdue
@@ -76,7 +94,7 @@ const handleSorting = (state: InitialState) => {
     let completedTasks = tasksToSort.filter((task) => !task.active);
     sorted = [...overdueTasks, ...activeTasks, ...completedTasks];
   }
-  if (sorting === null) sorted = tasksToSort;
+  if (sortingOrder === "desc") return sorted.reverse();
   return sorted;
 };
 

@@ -1,9 +1,18 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { tasksActions } from "../state/slices/tasksSlice";
+import { Filter } from "../state/slices/tasksSlice";
+import { RootState } from "../state/store";
 
 function Filter() {
   const dispatch = useDispatch();
+  const currentFilter = useSelector((state: RootState) => state.tasks.filter)
   const { filterTasks } = tasksActions;
+  const filters: { labeling: string; filterTerm: Filter }[] = [
+    { labeling: "Active Only", filterTerm: "active" },
+    { labeling: "Completed Only", filterTerm: "completed" },
+    { labeling: "Overdue Only", filterTerm: "overdue" },
+    { labeling: "All", filterTerm: null }
+  ];
   return (
     <>
       {/* Filters */}
@@ -13,27 +22,14 @@ function Filter() {
         </label>
         {/* filtering button */}
         <div className="flex flex-col" id="filters">
-          <div
-            onClick={() => dispatch(filterTasks("active"))}
-            className="border"
-          >
-            Active only
-          </div>
-          <div
-            onClick={() => dispatch(filterTasks("completed"))}
-            className="border"
-          >
-            Completed only
-          </div>
-          <div
-            onClick={() => dispatch(filterTasks("overdue"))}
-            className="border"
-          >
-            Overdue only
-          </div>
-          <div onClick={() => dispatch(filterTasks(null))} className="border">
-            All
-          </div>
+          {filters.map((filter) => (
+            <div
+              onClick={() => dispatch(filterTasks(filter.filterTerm))}
+              className={`border ${currentFilter == filter.filterTerm ? "bg-white text-black" : ""}`}
+            >
+              {filter.labeling}
+            </div>
+          ))}
         </div>
       </div>
     </>
