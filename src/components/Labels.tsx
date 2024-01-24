@@ -25,8 +25,8 @@ function Labels() {
                 <input
                   type="checkbox"
                   value={label.id}
-                  defaultChecked={taskFilter === labelFilter}
-                  onClick={() => {
+                  checked={taskFilter === labelFilter}
+                  onChange={() => {
                     if (taskFilter === labelFilter) {
                       dispatch(filterTasks(null));
                       return;

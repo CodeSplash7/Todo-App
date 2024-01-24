@@ -165,13 +165,13 @@ const TaskMainDetails = ({
   isTaskActive,
   triggerCompletion
 }: TaskMainDetailsProps) => {
-  // const dispatch = useDispatch();
-  // const { triggerCompletion } = tasksActions;
   return (
     <div
       style={{ borderColor: taskLabelColor }}
-      className={`flex justify-between px-[20px] py-[10px] bg-slate-700 border-[5px]
-      ${isTaskActive && isTaskOverdue ? "bg-red-700 text-white" : ""}
+      className={`flex justify-between px-[20px] py-[10px] border-[5px]
+      ${
+        isTaskActive && isTaskOverdue ? "bg-red-700 text-white" : "bg-slate-700"
+      }
     `}
     >
       {/* Task number */}
