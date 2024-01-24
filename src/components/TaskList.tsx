@@ -39,7 +39,7 @@ export default ({ handleUpdateTask }: TaskListProps) => {
           let creationDate = new Date(task.creationDate);
           let dueDate = new Date(task.dueDate);
           let taskLabel = taskLabels.find((label) => label.id === task.labelId);
-          let taskLabelColor = "#334155";
+          let taskLabelColor = "#33415500";
           if (taskLabel && taskLabel.color !== "")
             taskLabelColor = taskLabel.color;
 

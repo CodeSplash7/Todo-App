@@ -10,10 +10,12 @@ export type TaskForm = {
 };
 
 type TaskFormState = {
+  errorMessage: string | undefined;
   taskFormIsOpen: boolean;
 } & TaskForm;
 
 const initialState: TaskFormState = {
+  errorMessage: undefined,
   taskFormIsOpen: false,
   title: "",
   labelId: -1,
@@ -61,12 +63,16 @@ let taskFormSlice = createSlice({
     },
     resetForm(state) {
       state.taskFormIsOpen = false;
+      state.errorMessage = undefined;
       state.title = "";
       state.labelId = -1;
       state.creationDate = "";
       state.dueDate = "";
       state.description = "";
       state.id = undefined;
+    },
+    setErrorMessage(state, action: PayloadAction<string | undefined>) {
+      state.errorMessage = action.payload;
     }
     // createNewTask(state){}
   }

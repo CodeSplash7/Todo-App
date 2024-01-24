@@ -2,6 +2,7 @@
 import ReactModal from "react-modal";
 ReactModal.setAppElement("#root");
 import { useSelector, useDispatch } from "react-redux";
+import Joi from "joi";
 
 // types
 import { RootState } from "../state/store";
@@ -10,10 +11,21 @@ import { RootState } from "../state/store";
 import { taskFormActions } from "../state/slices/taskFormSlice";
 import { tasksActions } from "../state/slices/tasksSlice";
 
+const formSchema = Joi.object({
+  title: Joi.string().max(30).min(4).required(),
+  description: Joi.string().max(5000).min(0)
+});
+
 export default () => {
   const dispatch = useDispatch();
-  const { setTitle, setLabelId, setDueDate, setDescription, resetForm } =
-    taskFormActions;
+  const {
+    setTitle,
+    setLabelId,
+    setDueDate,
+    setDescription,
+    resetForm,
+    setErrorMessage
+  } = taskFormActions;
   const { addTask, updateTask } = tasksActions;
 
   let taskFormIsOpen = useSelector(
@@ -29,6 +41,9 @@ export default () => {
   let dueDate = useSelector((state: RootState) => state.taskForm.dueDate);
   let description = useSelector(
     (state: RootState) => state.taskForm.description
+  );
+  let formErrorMessage = useSelector(
+    (state: RootState) => state.taskForm.errorMessage
   );
 
   return (
@@ -75,7 +90,12 @@ export default () => {
             >
               <option value="-1">No label</option>
               {taskLabels.map((label) => (
-                <option style={{background: label.color}} className="[text-shadow:1px_1px_black]" key={label.id} value={label.id}>
+                <option
+                  style={{ background: label.color }}
+                  className="[text-shadow:1px_1px_black]"
+                  key={label.id}
+                  value={label.id}
+                >
                   {label.name}
                 </option>
               ))}
@@ -122,6 +142,10 @@ export default () => {
           {/* Save -> to the server */}
           <button
             onClick={() => {
+              let errorMessage = formSchema.validate({ title, description })
+                .error?.message;
+              dispatch(setErrorMessage(errorMessage));
+              if (errorMessage) return;
               if (id !== undefined) {
                 dispatch(
                   updateTask({
@@ -167,6 +191,7 @@ export default () => {
             Cancel
           </button>
         </div>
+        <p className="text-red-500">{formErrorMessage}</p>
       </div>
     </ReactModal>
   );
