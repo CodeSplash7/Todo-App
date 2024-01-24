@@ -5,7 +5,7 @@ import { RootState } from "../state/store";
 
 function Filter() {
   const dispatch = useDispatch();
-  const currentFilter = useSelector((state: RootState) => state.tasks.filter)
+  const currentFilter = useSelector((state: RootState) => state.tasks.filter);
   const { filterTasks } = tasksActions;
   const filters: { labeling: string; filterTerm: Filter }[] = [
     { labeling: "Active Only", filterTerm: "active" },
@@ -22,10 +22,13 @@ function Filter() {
         </label>
         {/* filtering button */}
         <div className="flex flex-col" id="filters">
-          {filters.map((filter) => (
+          {filters.map((filter, index) => (
             <div
+              key={index}
               onClick={() => dispatch(filterTasks(filter.filterTerm))}
-              className={`border ${currentFilter == filter.filterTerm ? "bg-white text-black" : ""}`}
+              className={`border ${
+                currentFilter == filter.filterTerm ? "bg-white text-black" : ""
+              }`}
             >
               {filter.labeling}
             </div>

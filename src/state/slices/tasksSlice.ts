@@ -10,7 +10,13 @@ export type Filter =
   | "overdue"
   | null
   | `label${number}`;
-export type Sorting = "creation" | "deadline" | "status" | null;
+
+type SortingTerm = "creation" | "deadline" | "status";
+type SortingOrder = "asc" | "desc";
+export type Sorting = {
+  term: SortingTerm;
+  order: SortingOrder;
+} | null;
 
 export type TaskObject = {
   id: number;
@@ -62,20 +68,13 @@ const handleSorting = (state: InitialState) => {
     return sorted;
   }
 
-  let sortingTerm: string = "";
-  let sortingOrder: string = "";
-
-  if (sorting) {
-    [sortingTerm, sortingOrder] = sorting.split("-");
-  }
-
-  if (sortingTerm === "creation") {
+  if (sorting.term === "creation") {
     sorted = tasksToSort.sort(
       (a, b) =>
-        new Date(a.creationDate).getTime() + new Date(b.creationDate).getTime()
+        new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime()
     );
   }
-  if (sortingTerm === "deadline") {
+  if (sorting.term === "deadline") {
     let tasksWithNoDeadline = tasksToSort.filter((task) => !task.dueDate);
     let tasksWithDeadline = tasksToSort.filter((task) => task.dueDate);
 
@@ -86,7 +85,7 @@ const handleSorting = (state: InitialState) => {
       )
     ];
   }
-  if (sortingTerm === "status") {
+  if (sorting.term === "status") {
     let overdueTasks = tasksToSort.filter((task) => task.overdue);
     let activeTasks = tasksToSort.filter(
       (task) => task.active && !task.overdue
@@ -94,7 +93,7 @@ const handleSorting = (state: InitialState) => {
     let completedTasks = tasksToSort.filter((task) => !task.active);
     sorted = [...overdueTasks, ...activeTasks, ...completedTasks];
   }
-  if (sortingOrder === "desc") return sorted.reverse();
+  if (sorting.order === "desc") return sorted.reverse();
   return sorted;
 };
 

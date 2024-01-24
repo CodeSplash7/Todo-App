@@ -6,12 +6,21 @@ import { RootState } from "../state/store";
 function Sort() {
   const dispatch = useDispatch();
   const { sortTasks } = tasksActions;
-  const currentSorting = useSelector((state: RootState) => state.tasks.sorting)
-  const sortings: { sortingTerm: Sorting; labeling: string }[] = [
-    { sortingTerm: "creation", labeling: "Creation Date" },
-    { sortingTerm: "deadline", labeling: "Due Date" },
-    { sortingTerm: "status", labeling: "Status" },
-    { sortingTerm: null, labeling: "No Sorting" }
+  const currentSorting = useSelector((state: RootState) => state.tasks.sorting);
+  const sortButtons: { sorting: Sorting; labeling: string }[] = [
+    {
+      sorting: { term: "creation", order: "asc" },
+      labeling: "Creation Date"
+    },
+    {
+      sorting: { term: "deadline", order: "asc" },
+      labeling: "Due Date"
+    },
+    {
+      sorting: { term: "status", order: "asc" },
+      labeling: "Status"
+    },
+    { sorting: null, labeling: "No Sorting" }
   ];
   return (
     <>
@@ -22,14 +31,42 @@ function Sort() {
         </label>
         {/* filtering button */}
         <div className="flex flex-col" id="filters">
-          {sortings.map((sorting) => (
-            <div
-              onClick={() => dispatch(sortTasks(sorting.sortingTerm))}
-              className={`border ${currentSorting === sorting.sortingTerm ? "bg-white text-black" : ""}`}
-            >
-              {sorting.labeling}
-            </div>
-          ))}
+          {sortButtons.map((sortBtn, index) => {
+            // if both sorting terms(either undefined or specific) are the same
+            let sameSortingTerm =
+              currentSorting?.term === sortBtn.sorting?.term;
+
+            // if both sorting orders(either undefined or specific)
+            let sameSortingOrder =
+              currentSorting?.order === sortBtn.sorting?.order;
+
+            if (sameSortingTerm && sameSortingOrder && sortBtn.sorting)
+              sortBtn.sorting.order = "desc";
+
+            if (sameSortingTerm && !sameSortingOrder && sortBtn.sorting)
+              sortBtn.sorting.order = "asc";
+
+            return (
+              <div
+                key={index}
+                onClick={() => dispatch(sortTasks(sortBtn.sorting))}
+                className={`border ${
+                  sameSortingTerm ? "bg-white text-black flex" : ""
+                }`}
+              >
+                {sortBtn.labeling}
+                {sameSortingTerm && sortBtn.sorting && (
+                  <div
+                    className={`${
+                      sortBtn.sorting?.order === "desc" ? "rotate-180" : ""
+                    }`}
+                  >
+                    ^
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </>
