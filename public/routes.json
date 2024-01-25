@@ -1,0 +1,4 @@
+{
+  "/users/:userId/labels": "/labels?creatorId=:userId",
+  "/users/:userId/tasks": "/tasks?creatorId=:userId"
+}

@@ -7,6 +7,7 @@ import MainHeader from "./components/MainHeader";
 import TaskList from "./components/TaskList";
 import Filter from "./components/Filter";
 import Sort from "./components/Sort";
+import Labels from "./components/Labels";
 
 // types
 import { AppDispath, RootState } from "./state/store";
@@ -16,7 +17,7 @@ import { taskFormActions } from "./state/slices/taskFormSlice";
 import { tickClock } from "./state/slices/clockSlice";
 import { useEffect } from "react";
 import { tasksActions } from "./state/slices/tasksSlice";
-import Labels from "./components/Labels";
+import { fetchUserData } from "./state/slices/userSlice";
 
 type ComponentFunctions = {
   handleUpdateTask: HandleUpdateTask;
@@ -45,6 +46,7 @@ function App() {
     dispatch(tickClock());
     dispatch(filterTasks(null));
     dispatch(sortTasks(null));
+    dispatch(fetchUserData({ email: "john@example.com", pwd: "k4h6b3f" }));
   }, [dispatch]);
 
   return (

@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { generateRandomId } from "../helperFunctions";
+// import { fetchUserData } from "./userSlice";
+import httpsService from "../../httpsService";
 
 type Label = {
   id: number;
@@ -8,26 +10,28 @@ type Label = {
 };
 
 type LabelsState = {
+  userId: number | null;
   labels: Label[];
 };
 
 const initialState: LabelsState = {
+  userId: null,
   labels: [
-    {
-      id: 0,
-      name: "label1",
-      color: "#ffffff"
-    },
-    {
-      id: 1,
-      name: "label2",
-      color: "#32a852"
-    },
-    {
-      id: 2,
-      name: "label3",
-      color: "#3d1f6e"
-    }
+    // {
+    //   id: 0,
+    //   name: "label1",
+    //   color: "#ffffff"
+    // },
+    // {
+    //   id: 1,
+    //   name: "label2",
+    //   color: "#32a852"
+    // },
+    // {
+    //   id: 2,
+    //   name: "label3",
+    //   color: "#3d1f6e"
+    // }
   ]
 };
 
@@ -36,9 +40,10 @@ const labelsSlice = createSlice({
   initialState,
   reducers: {
     removeLabel(state, action: PayloadAction<number>) {
-      state.labels = state.labels.filter(
-        (label) => label.id !== action.payload
-      );
+      let targetLabelId = action.payload;
+      state.labels = state.labels.filter((label) => label.id !== targetLabelId);
+      httpsService.delete(`labels/${action.payload}`);
+      // httpsService.delete(`labels/${action.payload}`);
     },
     updateLabel(
       state,
@@ -58,7 +63,13 @@ const labelsSlice = createSlice({
     addLabel(state) {
       state.labels.push({ id: generateRandomId(), name: "", color: "" });
     }
-  }
+  },
+  // extraReducers: (builder) => {
+  //   builder.addCase(fetchUserData.fulfilled, (state, action) => {
+  //     state.labels = action.payload.labels;
+  //     state.userId = action.payload.id;
+  //   });
+  // }
 });
 
 export default labelsSlice.reducer;

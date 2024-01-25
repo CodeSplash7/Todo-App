@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { tickClock } from "./clockSlice";
+// import { fetchUserData } from "./userSlice";
 
 import { labelsActions } from "./labelsSlice";
 import { generateRandomId } from "../helperFunctions";
@@ -111,36 +112,36 @@ const handleOrdering = (state: InitialState) => {
 
 const initialState: InitialState = {
   tasks: [
-    {
-      id: 0,
-      title: "TaskOfRandom",
-      description: "This is a random task.",
-      active: true,
-      overdue: true,
-      labelId: 1,
-      creationDate: new Date().toISOString(),
-      dueDate: new Date().toISOString()
-    },
-    {
-      id: 1,
-      title: "TaskOfRandom2",
-      description: "This is a random task. #2",
-      active: false,
-      overdue: false,
-      labelId: 2,
-      creationDate: new Date().toISOString(),
-      dueDate: new Date().toISOString()
-    },
-    {
-      id: 2,
-      title: "TaskOfRandom3",
-      description: "This is a random task. #3",
-      active: true,
-      overdue: true,
-      labelId: 0,
-      creationDate: new Date().toISOString(),
-      dueDate: new Date().toISOString()
-    }
+    // {
+    //   id: 0,
+    //   title: "TaskOfRandom",
+    //   description: "This is a random task.",
+    //   active: true,
+    //   overdue: true,
+    //   labelId: 1,
+    //   creationDate: new Date().toISOString(),
+    //   dueDate: new Date().toISOString()
+    // },
+    // {
+    //   id: 1,
+    //   title: "TaskOfRandom2",
+    //   description: "This is a random task. #2",
+    //   active: false,
+    //   overdue: false,
+    //   labelId: 2,
+    //   creationDate: new Date().toISOString(),
+    //   dueDate: new Date().toISOString()
+    // },
+    // {
+    //   id: 2,
+    //   title: "TaskOfRandom3",
+    //   description: "This is a random task. #3",
+    //   active: true,
+    //   overdue: true,
+    //   labelId: 0,
+    //   creationDate: new Date().toISOString(),
+    //   dueDate: new Date().toISOString()
+    // }
   ],
   filter: null,
   sorting: null,
@@ -218,24 +219,30 @@ let tasksSlice = createSlice({
         }
       });
     });
-    builder.addCase(
-      labelsActions.removeLabel,
-      (state, action: PayloadAction<number>) => {
-        state.tasks = state.tasks.map((task) => {
-          if (task.labelId === action.payload) {
-            task.labelId = -1;
+    builder
+      .addCase(
+        labelsActions.removeLabel,
+        (state, action: PayloadAction<number>) => {
+          state.tasks = state.tasks.map((task) => {
+            if (task.labelId === action.payload) {
+              task.labelId = -1;
+            }
+            return task;
+          });
+          let isFilteringByTheRemovedLabel =
+            state.filter?.slice(0, 5) === "label" &&
+            Number(state.filter.slice(5, state.filter.length)) ===
+              action.payload;
+          if (isFilteringByTheRemovedLabel) {
+            state.filter = null;
+            state.tasksToShow = handleOrdering(state);
           }
-          return task;
-        });
-        let isFilteringByTheRemovedLabel =
-          state.filter?.slice(0, 5) === "label" &&
-          Number(state.filter.slice(5, state.filter.length)) === action.payload;
-        if (isFilteringByTheRemovedLabel) {
-          state.filter = null;
-          state.tasksToShow = handleOrdering(state);
         }
-      }
-    );
+      )
+      // .addCase(fetchUserData.fulfilled, (state, action) => {
+      //   state.tasks = action.payload.tasks;
+      //   state.tasksToShow = handleOrdering(state);
+      // });
   }
 });
 
