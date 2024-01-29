@@ -28,8 +28,8 @@ export default () => {
   } = taskFormActions;
   const { addTask, updateTask } = tasksActions;
 
-  let taskFormIsOpen = useSelector(
-    (state: RootState) => state.taskForm.taskFormIsOpen
+  let isTaskFormOpen = useSelector(
+    (state: RootState) => state.taskForm.isTaskFormOpen
   );
   let taskLabels = useSelector((state: RootState) => state.labels.labels);
   let id = useSelector((state: RootState) => state.taskForm.id);
@@ -48,7 +48,7 @@ export default () => {
 
   return (
     <ReactModal
-      isOpen={taskFormIsOpen}
+      isOpen={isTaskFormOpen}
       closeTimeoutMS={1000}
       style={{
         overlay: {

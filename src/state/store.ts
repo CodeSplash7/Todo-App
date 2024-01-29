@@ -5,6 +5,7 @@ import TaskFormReducer from "./slices/taskFormSlice";
 import ClockReducer from "./slices/clockSlice";
 import LabelReducer from "./slices/labelsSlice";
 import UserReducer from "./slices/userSlice";
+import AuthFormSlice from "./slices/authFormSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,10 +13,11 @@ const store = configureStore({
     taskForm: TaskFormReducer,
     clock: ClockReducer,
     labels: LabelReducer,
-    user: UserReducer
+    user: UserReducer,
+    authForm: AuthFormSlice
   }
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispath = typeof store.dispatch;
+export type AppDispatch = typeof store.dispatch;
 export default store;

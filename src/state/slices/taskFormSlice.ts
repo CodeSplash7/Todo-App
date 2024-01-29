@@ -11,12 +11,12 @@ export type TaskForm = {
 
 type TaskFormState = {
   errorMessage: string | undefined;
-  taskFormIsOpen: boolean;
+  isTaskFormOpen: boolean;
 } & TaskForm;
 
 const initialState: TaskFormState = {
   errorMessage: undefined,
-  taskFormIsOpen: false,
+  isTaskFormOpen: false,
   title: "",
   labelId: -1,
   creationDate: "",
@@ -39,8 +39,8 @@ let taskFormSlice = createSlice({
   name: "task-form",
   initialState,
   reducers: {
-    setTaskFormIsOpen(state, action: PayloadAction<boolean>) {
-      state.taskFormIsOpen = action.payload;
+    toggleTaskForm(state, action: PayloadAction<boolean>) {
+      state.isTaskFormOpen = action.payload;
       state.creationDate = formatInputDate(new Date());
     },
     setTitle(state, action: PayloadAction<string>) {
@@ -62,7 +62,7 @@ let taskFormSlice = createSlice({
       state.id = action.payload;
     },
     resetForm(state) {
-      state.taskFormIsOpen = false;
+      state.isTaskFormOpen = false;
       state.errorMessage = undefined;
       state.title = "";
       state.labelId = -1;

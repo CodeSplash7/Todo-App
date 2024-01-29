@@ -1,5 +1,5 @@
 {
-  "users": [
+  "accounts": [
     {
       "id": 1,
       "username": "John Doe",
@@ -7,44 +7,103 @@
       "password": "k4h6b3f",
       "tasks": [
         {
-          "creatorId": 1,
-          "id": 0,
-          "title": "TaskOfRandom",
-          "description": "This is a random task.",
-          "active": true,
-          "overdue": true,
-          "labelId": 1,
-          "creationDate": "1/24/2024 20:39",
-          "dueDate": "1/24/2024 20:39"
-        },
-        {
-          "creatorId": 1,
-          "id": 1,
-          "title": "TaskOfRandom2",
-          "description": "This is a random task. #2",
+          "id": 719379,
+          "title": "Random task #1",
           "active": false,
           "overdue": false,
-          "labelId": 2,
-          "creationDate": "1/24/2024 20:39",
-          "dueDate": "1/24/2024 20:39"
+          "creationDate": "2024-01-26T18:40",
+          "dueDate": "0NaN-NaN-NaNTNaN:NaN",
+          "description": "",
+          "labelId": 559474
         },
         {
-          "creatorId": 1,
-          "id": 2,
-          "title": "TaskOfRandom3",
-          "description": "This is a random task. #3",
+          "id": 533962,
+          "title": "Random Task #2",
           "active": true,
-          "overdue": true,
-          "labelId": 0,
-          "creationDate": "1/24/2024 20:39",
-          "dueDate": "1/24/2024 20:39"
+          "overdue": false,
+          "creationDate": "2024-01-26T18:37",
+          "dueDate": "",
+          "description": "",
+          "labelId": -1
+        },
+        {
+          "id": 274647,
+          "title": "Random Task #3",
+          "active": true,
+          "overdue": false,
+          "creationDate": "2024-01-26T18:37",
+          "dueDate": "",
+          "description": "",
+          "labelId": -1
         }
       ],
       "labels": [
-        { "creatorId": 1, "id": 0, "name": "label1", "color": "#ffffff" },
-        { "creatorId": 1, "id": 1, "name": "label2", "color": "#32a852" },
-        { "creatorId": 1, "id": 2, "name": "label3", "color": "#3d1f6e" }
+        {
+          "id": 559474,
+          "name": "category #1",
+          "color": "#62ead6"
+        }
       ]
+    },
+    {
+      "id": 2,
+      "username": "User #2",
+      "email": "user.2@example.com",
+      "password": "f7trK7g2",
+      "tasks": [
+        {
+          "id": 430203,
+          "title": "fdsafd",
+          "active": true,
+          "overdue": false,
+          "creationDate": "2024-01-27T12:31",
+          "dueDate": "0NaN-NaN-NaNTNaN:NaN",
+          "description": "fdsaf",
+          "labelId": -1
+        },
+        {
+          "id": 164303,
+          "title": "TEsting tasks",
+          "active": false,
+          "overdue": false,
+          "creationDate": "2024-01-27T11:41",
+          "dueDate": "0NaN-NaN-NaNTNaN:NaN",
+          "description": "fasdf",
+          "labelId": 416229
+        }
+      ],
+      "labels": [
+        {
+          "id": 416229,
+          "name": "test label",
+          "color": "#18e292"
+        }
+      ]
+    },
+    {
+      "email": "the.boss@gmail.com",
+      "password": "1234",
+      "username": "the Boss",
+      "tasks": [
+        {
+          "id": 323658,
+          "title": "fdasdfa",
+          "active": true,
+          "overdue": false,
+          "creationDate": "2024-01-27T19:49",
+          "dueDate": "",
+          "description": "dfasdf",
+          "labelId": -1
+        }
+      ],
+      "labels": [
+        {
+          "id": 372147,
+          "name": "the boss's lable",
+          "color": ""
+        }
+      ],
+      "id": 3
     }
   ]
 }

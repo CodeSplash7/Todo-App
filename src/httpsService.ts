@@ -11,5 +11,6 @@ export default {
   get: instance.get,
   post: instance.post,
   patch: instance.patch,
-  delete: instance.delete
+  delete: instance.delete,
+  put: instance.put
 };

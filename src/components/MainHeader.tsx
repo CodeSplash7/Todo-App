@@ -7,7 +7,7 @@ import { taskFormActions } from "../state/slices/taskFormSlice";
 
 export default () => {
   const dispatch = useDispatch();
-  const { setTaskFormIsOpen } = taskFormActions;
+  const { toggleTaskForm: setTaskFormIsOpen } = taskFormActions;
   return (
     <div className="flex gap-[10px] items-center">
       {/* Page Title */}

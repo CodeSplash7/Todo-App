@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { tickClock } from "./clockSlice";
-// import { fetchUserData } from "./userSlice";
+import { createNewAccount, fetchAccountData, logOut } from "./userSlice";
 
 import { labelsActions } from "./labelsSlice";
 import { generateRandomId } from "../helperFunctions";
+import httpsService from "../../httpsService";
 
 import _ from "lodash";
 
@@ -37,6 +38,7 @@ type InitialState = {
   filter: Filter;
   sorting: Sorting;
   tasksToShow: TaskObject[];
+  userId: number;
 };
 
 const handleFiltering = (state: InitialState) => {
@@ -110,6 +112,11 @@ const handleOrdering = (state: InitialState) => {
   // return _.intersectionBy(filtered, sorted, "id");
 };
 
+const handleApiDataUpdate = (state: InitialState) => {
+  if (state.userId > -1)
+    httpsService.patch(`accounts/${state.userId}`, { tasks: state.tasks });
+};
+
 const initialState: InitialState = {
   tasks: [
     // {
@@ -145,7 +152,8 @@ const initialState: InitialState = {
   ],
   filter: null,
   sorting: null,
-  tasksToShow: []
+  tasksToShow: [],
+  userId: -1
 };
 
 let tasksSlice = createSlice({
@@ -167,12 +175,14 @@ let tasksSlice = createSlice({
       task.id = generateRandomId();
       state.tasks.push(task);
       state.tasksToShow = handleOrdering(state);
+      handleApiDataUpdate(state);
     },
     deleteTask(state, action: PayloadAction<number>) {
       const taskId = action.payload;
       const newTasks = state.tasks.filter((task) => task.id !== taskId);
       state.tasks = newTasks;
       state.tasksToShow = handleOrdering(state);
+      handleApiDataUpdate(state);
     },
     updateTask(state, action: PayloadAction<{ id: number; info: TaskObject }>) {
       let targetedTask = state.tasks.find(
@@ -186,6 +196,7 @@ let tasksSlice = createSlice({
         return task;
       });
       state.tasksToShow = handleOrdering(state);
+      handleApiDataUpdate(state);
     },
     triggerCompletion(state, action: PayloadAction<number>) {
       let targetedTask = state.tasks.find((task) => task.id === action.payload);
@@ -200,6 +211,7 @@ let tasksSlice = createSlice({
         return task;
       });
       state.tasksToShow = handleOrdering(state);
+      handleApiDataUpdate(state);
     }
   },
   extraReducers: (builder) => {
@@ -239,12 +251,23 @@ let tasksSlice = createSlice({
           }
         }
       )
-      // .addCase(fetchUserData.fulfilled, (state, action) => {
-      //   state.tasks = action.payload.tasks;
-      //   state.tasksToShow = handleOrdering(state);
-      // });
+      .addCase(fetchAccountData.fulfilled, handleAuth)
+      .addCase(createNewAccount.fulfilled, handleAuth)
+      .addCase(logOut.fulfilled, handleLogOut);
   }
 });
+
+function handleLogOut(state: InitialState) {
+  state.tasks = [];
+  state.userId = -1;
+  state.tasksToShow = [];
+}
+
+function handleAuth(state: InitialState, action: any) {
+  state.tasks = action.payload.tasks;
+  state.userId = action.payload.id;
+  state.tasksToShow = handleOrdering(state);
+}
 
 export default tasksSlice.reducer;
 export const tasksActions = tasksSlice.actions;

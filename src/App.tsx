@@ -3,28 +3,30 @@ import { useDispatch, useSelector } from "react-redux";
 
 // components
 import TaskForm from "./components/TaskForm";
+import AuthForm from "./components/AuthForm";
 import MainHeader from "./components/MainHeader";
 import TaskList from "./components/TaskList";
 import Filter from "./components/Filter";
 import Sort from "./components/Sort";
 import Labels from "./components/Labels";
+import Navbar from "./components/Navbar";
 
 // types
-import { AppDispath, RootState } from "./state/store";
+import { AppDispatch, RootState } from "./state/store";
 
 // redux actions
 import { taskFormActions } from "./state/slices/taskFormSlice";
 import { tickClock } from "./state/slices/clockSlice";
 import { useEffect } from "react";
 import { tasksActions } from "./state/slices/tasksSlice";
-import { fetchUserData } from "./state/slices/userSlice";
+import { fetchAccountData } from "./state/slices/userSlice";
 
 type ComponentFunctions = {
   handleUpdateTask: HandleUpdateTask;
 };
 
 function App() {
-  const dispatch = useDispatch<AppDispath>();
+  const dispatch = useDispatch<AppDispatch>();
   // get redux actions
   const {
     setTitle,
@@ -32,7 +34,7 @@ function App() {
     setCreationDate,
     setDueDate,
     setDescription,
-    setTaskFormIsOpen,
+    toggleTaskForm: setTaskFormIsOpen,
     setId
   } = taskFormActions;
 
@@ -46,27 +48,32 @@ function App() {
     dispatch(tickClock());
     dispatch(filterTasks(null));
     dispatch(sortTasks(null));
-    dispatch(fetchUserData({ email: "john@example.com", pwd: "k4h6b3f" }));
+    let loggedId = Number(localStorage.getItem("userId"));
+    if (loggedId && loggedId > 0) dispatch(fetchAccountData(loggedId));
   }, [dispatch]);
 
   return (
     <>
       <TaskForm />
+      <AuthForm />
       {/* Whole page */}
-      <div className="flex">
-        {/* Page left */}
-        <div className="flex-1 pt-[100px] flex flex-col items-center gap-[30px]">
-          <Filter />
-          <Sort />
-        </div>
-        {/* Page center */}
-        <div className="flex-[1.5] pt-[100px] flex flex-col items-center gap-[20px]">
-          <MainHeader />
-          <TaskList handleUpdateTask={handleUpdateTask} />
-        </div>
-        {/* Page right */}
-        <div className="flex-1 pt-[100px] flex flex-col items-center w-full">
-          <Labels />
+      <div className="flex flex-col">
+        <Navbar />
+        <div className="flex pt-[50px]">
+          {/* Page left */}
+          <div className="flex-1 flex flex-col items-center gap-[30px]">
+            <Filter />
+            <Sort />
+          </div>
+          {/* Page center */}
+          <div className="flex-[1.5] flex flex-col items-center gap-[20px]">
+            <MainHeader />
+            <TaskList handleUpdateTask={handleUpdateTask} />
+          </div>
+          {/* Page right */}
+          <div className="flex-1 flex flex-col items-center w-full">
+            <Labels />
+          </div>
         </div>
       </div>
     </>
