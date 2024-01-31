@@ -1,7 +1,7 @@
-import { authFormActions } from "../state/slices/authFormSlice";
+import { authFormActions } from "../state/slices/authFormSlice/authFormSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../state/store";
-import { logOut } from "../state/slices/userSlice";
+import { logOut } from "../state/thunkActions";
 
 const Navbar = () => {
   const username = useSelector((state: RootState) => state.user.username);
@@ -23,7 +23,7 @@ const Navbar = () => {
 
 const LoginBtn = () => {
   const dispatch = useDispatch();
-  const { toggleAuthForm, setPurpose } = authFormActions;
+  const { toggleAuthForm, setFormPurpose: setPurpose } = authFormActions;
   return (
     <div
       onClick={() => {
@@ -53,7 +53,7 @@ const LogOutBtn = () => {
 
 const RegisterBtn = () => {
   const dispatch = useDispatch();
-  const { toggleAuthForm, setPurpose } = authFormActions;
+  const { toggleAuthForm, setFormPurpose: setPurpose } = authFormActions;
   return (
     <div
       onClick={() => {

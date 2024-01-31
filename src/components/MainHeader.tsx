@@ -1,13 +1,9 @@
 import { useDispatch } from "react-redux";
-import { taskFormActions } from "../state/slices/taskFormSlice";
-
-// type MainHeaderProps = {
-//   openTaskForm: () => void;
-// };
+import { taskFormActions } from "../state/slices/taskFormSlice/taskFormSlice";
 
 export default () => {
   const dispatch = useDispatch();
-  const { toggleTaskForm: setTaskFormIsOpen } = taskFormActions;
+  const { toggleTaskForm } = taskFormActions;
   return (
     <div className="flex gap-[10px] items-center">
       {/* Page Title */}
@@ -16,7 +12,7 @@ export default () => {
       <button
         className="bg-green-500 rounded px-[20px] py-[10px] hover:bg-green-600 transition duration-200"
         onClick={() => {
-          dispatch(setTaskFormIsOpen(true));
+          dispatch(toggleTaskForm(true));
         }}
       >
         New Task

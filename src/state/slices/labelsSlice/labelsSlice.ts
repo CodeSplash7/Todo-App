@@ -1,18 +1,14 @@
+// import library data
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { generateRandomId } from "../helperFunctions";
-import { fetchAccountData, createNewAccount, logOut } from "./userSlice";
-import httpsService from "../../httpsService";
-
-export type LabelObject = {
-  id: number;
-  name: string;
-  color: string;
-};
-
-type LabelsState = {
-  userId: number;
-  labels: LabelObject[];
-};
+// import helper functions
+import { generateRandomId } from "../../helperFunctions";
+import httpsService from "../../../httpService";
+// import thunk action
+import { fetchAccountData, createNewAccount, logOut } from "../../thunkActions";
+// import types
+import { LabelsState } from "./labelTypes";
+// import extra reducers
+import { handleLogout, handleAuth } from "./labelsExtraReducers";
 
 const initialState: LabelsState = {
   userId: -1,
@@ -77,16 +73,6 @@ const labelsSlice = createSlice({
       .addCase(logOut.fulfilled, handleLogout);
   }
 });
-
-function handleLogout(state: LabelsState) {
-  state.labels = [];
-  state.userId = -1;
-}
-
-function handleAuth(state: LabelsState, action: any) {
-  state.labels = action.payload.labels;
-  state.userId = action.payload.id;
-}
 
 export default labelsSlice.reducer;
 export const labelsActions = labelsSlice.actions;

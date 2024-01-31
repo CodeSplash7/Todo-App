@@ -1,20 +1,10 @@
+// import libraries data
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export type TaskForm = {
-  id?: number;
-  title: string;
-  labelId: number;
-  creationDate: string;
-  dueDate: string;
-  description: string;
-};
-
-type TaskFormState = {
-  errorMessage: string | undefined;
-  isTaskFormOpen: boolean;
-} & TaskForm;
+// import types
+import { TaskFormState } from "./taskFormTypes";
 
 const initialState: TaskFormState = {
+  id: -1,
   errorMessage: undefined,
   isTaskFormOpen: false,
   title: "",
@@ -26,7 +16,6 @@ const initialState: TaskFormState = {
 
 function formatInputDate(date: Date) {
   // const currentDate = new Date();
-
   const year = date.getFullYear().toString().padStart(4, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
   const day = date.getDate().toString().padStart(2, "0");
@@ -69,12 +58,11 @@ let taskFormSlice = createSlice({
       state.creationDate = "";
       state.dueDate = "";
       state.description = "";
-      state.id = undefined;
+      state.id = -1;
     },
     setErrorMessage(state, action: PayloadAction<string | undefined>) {
       state.errorMessage = action.payload;
     }
-    // createNewTask(state){}
   }
 });
 

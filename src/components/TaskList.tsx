@@ -6,7 +6,7 @@ import { HandleUpdateTask } from "../App";
 import { RootState } from "../state/store";
 
 // actions
-import { tasksActions } from "../state/slices/tasksSlice";
+import { tasksActions } from "../state/slices/taskSlice/tasksSlice";
 
 type TaskListProps = {
   handleUpdateTask: HandleUpdateTask;

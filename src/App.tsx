@@ -15,11 +15,10 @@ import Navbar from "./components/Navbar";
 import { AppDispatch, RootState } from "./state/store";
 
 // redux actions
-import { taskFormActions } from "./state/slices/taskFormSlice";
-import { tickClock } from "./state/slices/clockSlice";
+import { taskFormActions } from "./state/slices/taskFormSlice/taskFormSlice";
+import { tickClock, fetchAccountData } from "./state/thunkActions";
 import { useEffect } from "react";
-import { tasksActions } from "./state/slices/tasksSlice";
-import { fetchAccountData } from "./state/slices/userSlice";
+import { tasksActions } from "./state/slices/taskSlice/tasksSlice";
 
 type ComponentFunctions = {
   handleUpdateTask: HandleUpdateTask;
